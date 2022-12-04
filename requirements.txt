@@ -1,4 +1,5 @@
-jax==0.3.0
-jaxlib==0.3.0
+jax
+jaxlib
+pandas
 numpy
 scikit-learn
