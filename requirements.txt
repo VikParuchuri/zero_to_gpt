@@ -3,3 +3,4 @@ jaxlib
 pandas
 numpy
 scikit-learn
+Pillow
