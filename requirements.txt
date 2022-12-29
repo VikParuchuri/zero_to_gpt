@@ -4,3 +4,4 @@ pandas
 numpy
 scikit-learn
 Pillow
+scikit-image
