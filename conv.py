@@ -1,4 +1,5 @@
 from network import Module
+from activation import Relu
 import numpy as np
 from skimage.util import view_as_windows
 import math
@@ -14,8 +15,9 @@ def unroll_image(image, kernel_x, kernel_y):
     return unrolled.reshape(rows, kernel_x * kernel_y)
 
 class Conv(Module):
-    def __init__(self, input_channels, output_channels, kernel_x, kernel_y, bias=True, seed=0):
+    def __init__(self, input_channels, output_channels, kernel_x, kernel_y, bias=True, activation=True, seed=0):
         self.add_bias = bias
+        self.add_activation = activation
         self.kernel_x = kernel_x
         self.kernel_y = kernel_y
         self.input_channels = input_channels
@@ -26,6 +28,7 @@ class Conv(Module):
         k = math.sqrt(1 / (input_channels * (kernel_x + kernel_y)))
         self.weights = np.random.rand(input_channels, output_channels, kernel_x, kernel_y) * (2 * k) - k
         self.bias = np.ones(output_channels) * (2 * k) - k
+        self.activation = Relu()
 
         super().__init__()
 
@@ -46,10 +49,14 @@ class Conv(Module):
                 output[next_channel, :] += self.bias[next_channel]
 
         self.hidden = output.copy()
+        if self.add_activation:
+            output = self.activation.forward(output)
         return output
 
     def backward(self, grad, lr, prev_hidden):
         grad = grad.reshape(self.hidden.shape)
+        if self.add_activation:
+            grad = self.activation.backward(grad, lr, self.hidden)
 
         _, grad_x, grad_y = grad.shape
         new_grad = np.zeros(prev_hidden.shape)

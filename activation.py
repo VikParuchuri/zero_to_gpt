@@ -3,12 +3,10 @@ import numpy as np
 
 class Relu(Module):
     def __init__(self):
-        self.relu = lambda x: np.maximum(x, 0)
-        self.hidden = None
+        pass
 
     def forward(self, x):
-        self.hidden = x.copy()
-        return self.relu(x)
+        return np.maximum(x, 0)
 
-    def backward(self, grad, lr, prev_hidden=None):
-        return np.multiply(grad, np.heaviside(self.hidden, 0))
+    def backward(self, grad, lr, prev_hidden):
+        return np.multiply(grad, np.heaviside(prev_hidden, 0))
