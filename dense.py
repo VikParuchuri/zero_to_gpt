@@ -33,7 +33,7 @@ class Dense(Module):
         w_grad = np.matmul(grad, self.input).T
         b_grad = grad.T
 
-        self.weights -= (w_grad + self.weights * .01) * lr
+        self.weights -= w_grad * lr
         if self.add_bias:
             self.bias -= b_grad * lr
 
