@@ -14,8 +14,8 @@ def unroll_image(image, kernel_x, kernel_y):
     return unrolled.reshape(rows, kernel_x * kernel_y)
 
 class Conv(Module):
-    def __init__(self, input_channels, output_channels, kernel_x, kernel_y, relu=True, seed=0):
-        self.add_relu = relu
+    def __init__(self, input_channels, output_channels, kernel_x, kernel_y, bias=True, seed=0):
+        self.add_bias = bias
         self.kernel_x = kernel_x
         self.kernel_y = kernel_y
         self.input_channels = input_channels
@@ -23,8 +23,9 @@ class Conv(Module):
         self.hidden = None
 
         np.random.seed(seed)
-        self.weights = np.random.rand(input_channels, output_channels, kernel_x, kernel_y) / 10
-        self.relu = lambda x: np.maximum(x, 0)
+        k = math.sqrt(1 / (input_channels * (kernel_x + kernel_y)))
+        self.weights = np.random.rand(input_channels, output_channels, kernel_x, kernel_y) * (2 * k) - k
+        self.bias = np.ones(output_channels) * (2 * k) - k
 
         super().__init__()
 
@@ -40,18 +41,19 @@ class Conv(Module):
                 output[next_channel, :] += mult
         output /= x.shape[0]
 
+        if self.add_bias:
+            for next_channel in range(self.output_channels):
+                output[next_channel, :] += self.bias[next_channel]
+
         self.hidden = output.copy()
-        if self.add_relu:
-            output = np.maximum(output, 0)
         return output
 
     def backward(self, grad, lr, prev_hidden):
         grad = grad.reshape(self.hidden.shape)
-        if self.add_relu:
-            grad = np.multiply(grad, np.heaviside(self.hidden, 0))
 
         _, grad_x, grad_y = grad.shape
         new_grad = np.zeros(prev_hidden.shape)
+        # Kernel weight update
         for channel in range(self.input_channels):
             # With multi-channel output, you need to loop across the output grads to link to input channel kernels
             # Each kernel gets a unique update
@@ -59,9 +61,18 @@ class Conv(Module):
             for next_channel in range(self.output_channels):
                 # Kernel update
                 channel_grad = grad[next_channel, :]
-                k_grad = convolve(flat_input, channel_grad).reshape(self.kernel_x, self.kernel_y)
+                # Each parameter is linked to multiple output pixels.
+                # Dividing by the number of pixels ensures correct update size.
                 grad_norm = math.prod(channel_grad.shape)
-                self.weights[channel, next_channel, :] -= (k_grad * lr) / grad_norm
+                k_grad = convolve(flat_input, channel_grad).reshape(self.kernel_x, self.kernel_y) / grad_norm
+                self.weights[channel, next_channel, :] -= k_grad * lr
+        # Bias update
+        if self.add_bias:
+            for next_channel in range(self.output_channels):
+                channel_grad = grad[next_channel, :]
+                self.bias[next_channel] -= np.mean(channel_grad) * lr
+
+        # Propagate grad to next layer
         for next_channel in range(self.output_channels):
             channel_grad = grad[next_channel, :]
             padded_grad = np.pad(channel_grad, ((self.kernel_x - 1, self.kernel_x - 1), (self.kernel_y - 1, self.kernel_y - 1)))
