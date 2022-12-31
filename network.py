@@ -5,7 +5,7 @@ class Network():
     def forward(self):
         pass
 
-    def backward(self):
+    def backward(self, grad, lr):
         pass
 
 class Module():
@@ -15,5 +15,5 @@ class Module():
     def forward(self, x):
         pass
 
-    def backward(self, grad, lr):
+    def backward(self, grad, lr, prev_hidden):
         pass
