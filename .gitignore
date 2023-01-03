@@ -1,6 +1,7 @@
 .idea/
 .DS_Store
 images/
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
