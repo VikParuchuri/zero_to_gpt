@@ -1,4 +1,4 @@
-from network import Module
+from .network import Module
 import numpy as np
 
 class Relu(Module):

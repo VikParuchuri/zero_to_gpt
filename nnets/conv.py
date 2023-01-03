@@ -1,5 +1,5 @@
-from network import Module
-from activation import Relu
+from .network import Module
+from .activation import Relu
 import numpy as np
 from skimage.util import view_as_windows
 import math
