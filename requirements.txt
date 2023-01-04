@@ -7,3 +7,4 @@ Pillow
 scikit-image
 torch
 polars
+matplotlib

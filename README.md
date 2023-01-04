@@ -6,18 +6,19 @@ This repository will help you master neural networks.  It contains writeups of h
 
 I recommend reading the writeup, then looking at the exploratory implementation, then looking at the clean implementation.
 
-## 1. Linear regression
+## 1. Gradient Descent
 
-Linear regression and gradient descent are important building blocks for neural networks.
+Gradient descent is an important building block for neural networks.
 
-- [Linear regression tutorial](explanations/linreg.ipynb)
-- [Clean implementation](nnets/linreg.py)
+- [Gradient descent with linear regression tutorial](explanations/linreg.ipynb)
+- [Clean implementation](nnets/dense.py) - linear regression is equivalent to a dense network with no activation function.
 - [Notebook implementation](exploration/linreg/linreg.ipynb)
 
 ## 2. Dense networks
 
 Dense networks are networks where every input is connected to an output.
 
+- Dense network tutorial coming soon
 - [Clean implementation](nnets/dense.py)
 - [Notebook implementation](exploration/dense/dense.ipynb)
 
@@ -25,5 +26,11 @@ Dense networks are networks where every input is connected to an output.
 
 Convolutional neural networks are used for working with images and time series.
 
+- Convolutional network tutorial coming soon
 - [Clean implementation](nnets/conv.py)
 - [Notebook implementation](exploration/cnn/cnn.ipynb)
+
+
+# Installation
+
+- `pip install -r requirements.txt`
