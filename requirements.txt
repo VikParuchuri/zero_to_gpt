@@ -6,3 +6,4 @@ scikit-learn
 Pillow
 scikit-image
 torch
+polars
