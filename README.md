@@ -1,6 +1,8 @@
-This repository will help you master neural networks.  It contains writeups of how different neural networks work, along with full implementations of different network types.
+# Neural Networks From Scratch
 
-- The `explanations` folder has writeups of each algorithm.
+This course will help you master neural networks from the ground up.
+
+- The `explanations` folder has writeups of each algorithm, starting with the basics.
 - The `nnets` folder has clean implementations that are best for someone who understands the high level concept.
 - The `exploration` folder has implementations that are more exploratory and easier to understand for beginners.
 
