@@ -34,3 +34,4 @@ Convolutional neural networks are used for working with images and time series.
 # Installation
 
 - `pip install -r requirements.txt`
+- You can download the data [here](https://drive.google.com/drive/folders/1uchDw57-lJ_lA7gqLvUZ9mOy4Ig0rH5y?usp=share_link).  Put it in the `data` folder.

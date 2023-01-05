@@ -1,6 +1,9 @@
 .idea/
 .DS_Store
 *.csv
+scratch
+*live.ipynb
+*live*.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
