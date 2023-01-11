@@ -8,3 +8,4 @@ scikit-image
 torch
 polars
 matplotlib
+datasets
