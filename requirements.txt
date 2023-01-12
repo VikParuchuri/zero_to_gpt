@@ -1,5 +1,3 @@
-jax
-jaxlib
 pandas
 numpy
 scikit-learn
@@ -9,3 +7,5 @@ torch
 polars
 matplotlib
 datasets
+torchtext
+sentencepiece
