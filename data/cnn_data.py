@@ -13,8 +13,8 @@ MODEL_PREFIX = "cnn"
 MODEL_FILE = f"{MODEL_PREFIX}.model"
 TOKENS_FILE = "tokens.txt"
 
-def chunk_text(texts, chunk_length):
-    return [(t[:chunk_length], t[chunk_length:(2 * chunk_length)]) for t in texts if (chunk_length * 2) <= len(t)]
+def chunk_text(texts, chunk_length, y_chunk_length):
+    return [(t[:chunk_length], t[chunk_length:(chunk_length + y_chunk_length)]) for t in texts if (chunk_length + y_chunk_length) <= len(t)]
 
 def decode_ids(ids, sp_base, vocab_size):
     if isinstance(ids, torch.Tensor):
@@ -47,24 +47,25 @@ class CNNDataset(Dataset):
 
     def __getitem__(self, idx):
         x = torch.tensor(self.dataset[idx][0]).int()
-        y_list = self.dataset[idx][1]
-        y = torch.tensor(encode(y_list, self.vocab_size)).float()
-        return x.to(self.device), y.to(self.device)
+        y_list = [self.start_token] + self.dataset[idx][1]
+        comb_y = torch.tensor(encode(y_list, self.vocab_size)).float()
+        y = comb_y[1:]
+        prev_y = comb_y[:-1]
+        return x.to(self.device), y.to(self.device), prev_y.to(self.device)
 
-def load_data_list(data, key, text_length, chunk_length):
+def load_data_list(data, key, text_length):
     selection = data[key]["highlights"][:text_length]
     return selection
 
-def generate_data(train_length=1000, valid_length=250, test_length=250, vocab_size=1000, chunk_length=12, batch_size=8, device="cpu", retrain_tokenizer=True):
+def generate_data(train_length=1000, valid_length=250, test_length=250, vocab_size=1000, chunk_length=12, y_chunk_length=4, batch_size=8, device="cpu", retrain_tokenizer=True):
     stop_token = vocab_size
     start_token = vocab_size + 1
-    chunk_length = 12
 
     # Load from Huggingface datasets module
     data = load_dataset("cnn_dailymail", "3.0.0")
-    train = load_data_list(data, "train", train_length, chunk_length)
-    valid = load_data_list(data, "validation", valid_length, chunk_length)
-    test = load_data_list(data, "test", test_length, chunk_length)
+    train = load_data_list(data, "train", train_length)
+    valid = load_data_list(data, "validation", valid_length)
+    test = load_data_list(data, "test", test_length)
 
     if retrain_tokenizer:
         with open(TOKENS_FILE, "w+") as f:
@@ -76,7 +77,7 @@ def generate_data(train_length=1000, valid_length=250, test_length=250, vocab_si
 
     def generate_dataset(data):
         ids = list(encoding_generator(data))
-        ids = chunk_text(ids, chunk_length)
+        ids = chunk_text(ids, chunk_length, y_chunk_length)
         dataset = CNNDataset(ids, start_token, stop_token, device, vocab_size+2)
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
         return loader
