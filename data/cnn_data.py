@@ -18,7 +18,9 @@ def chunk_text(texts, chunk_length, y_chunk_length):
 
 def decode_ids(ids, sp_base, vocab_size):
     if isinstance(ids, torch.Tensor):
-        ids = [int(i) for i in list(ids.numpy()) if int(i) < vocab_size]
+        ids = list(ids.numpy())
+
+    ids = [int(i) for i in ids if int(i) < vocab_size]
     return sp_base.decode(ids)
 
 def decode_batch(id_tensor, vocab_size):
@@ -47,7 +49,7 @@ class CNNDataset(Dataset):
 
     def __getitem__(self, idx):
         x = torch.tensor(self.dataset[idx][0]).int()
-        y_list = [self.start_token] + self.dataset[idx][1]
+        y_list = [self.start_token] + self.dataset[idx][0]
         comb_y = torch.tensor(encode(y_list, self.vocab_size)).float()
         y = comb_y[1:]
         prev_y = comb_y[:-1]
