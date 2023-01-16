@@ -49,10 +49,18 @@ Recurrent neural networks can process sequences of data.  They are used for time
 - [Notebook implementation](exploration/rnn/rnn.ipynb)
 - Clean implementation coming soon
 
-## 5.  Encoder/Decoder RNNs
+## 5. Gated recurrent networks
+
+Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
+
+- GRU tutorial coming soon
+- [Notebook implementation](exploration/gru/gru.ipynb)
+- Clean implementation coming soon
+
+## 6.  Encoder/Decoder RNNs
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
 - Tutorial coming soon
-- Notebook coming soon
+- [Notebook implementation](exploration/rnnencoder/encoder.ipynb)
 - Clean implementation coming soon

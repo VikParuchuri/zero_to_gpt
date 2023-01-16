@@ -29,18 +29,18 @@ class TextDatasetWrapper:
 
     def __init__(self, vocab_size, device):
         self.sp_vocab_size = vocab_size
-        # Add 3 for start, stop, pad tokens
-        self.vocab_size = vocab_size + 3
+        self.vocab_size = vocab_size + 1
         # Add one for the stop token at the end of the sequence
         self.y_length = self.target_length + 1
 
         self.data = {}
         self.split_data = {}
         self.encoded_data = {}
-        self.pad_token = vocab_size
-        self.start_token = vocab_size + 1
-        self.stop_token = vocab_size + 2
         self.device = device
+        self.unk_token = 0
+        self.start_token = 1
+        self.stop_token = 2
+        self.pad_token = vocab_size
 
         self.extract_data()
         tokenizer_data = ""
@@ -64,7 +64,7 @@ class TextDatasetWrapper:
             if not self.target_length:
                 self.target_length = max([len(s) for s in target])
             x = self.pad_sequences(x, self.x_length)
-            target = self.pad_sequences(target, self.target_length, use_stop=True)
+            target = self.pad_sequences(target, self.y_length, use_stop=True)
             self.encoded_data[split] = {"x": x, "target": target}
         self.create_final_sets()
 
@@ -107,12 +107,11 @@ class TextDatasetWrapper:
             i = int(i)
             if i in [self.stop_token, self.pad_token]:
                 break
-            elif i >= self.sp_vocab_size:
+            elif i in [self.start_token]:
                 continue
             new_ids.append(i)
 
-        ids = [int(i) for i in new_ids if int(i) < self.sp_vocab_size]
-        return self.sp_base.decode(ids)
+        return self.sp_base.decode(new_ids)
 
     def decode_batch(self, id_tensor):
         decoded = []

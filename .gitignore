@@ -1,6 +1,6 @@
 .idea/
 .DS_Store
-*.csv
+fashion*.csv
 scratch
 *live.ipynb
 *live*.ipynb
