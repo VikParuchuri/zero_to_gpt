@@ -7,6 +7,7 @@ scratch
 tokens.txt
 *.vocab
 *.model
+wandb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
