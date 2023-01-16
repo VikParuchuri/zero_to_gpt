@@ -134,9 +134,7 @@ class TextDataset(Dataset):
         self.vocab_size = wrapper.vocab_size
 
     def encode(self, tokens):
-        mat = np.zeros((len(tokens), self.vocab_size))
-        for i in range(len(tokens)):
-            mat[i, tokens[i]] = 1
+        mat = torch.nn.functional.one_hot(tokens, self.vocab_size)
         return mat
 
     def __len__(self):
@@ -145,7 +143,7 @@ class TextDataset(Dataset):
     def __getitem__(self, idx):
         x = torch.tensor(self.x[idx]).int()
         y_list = [self.start_token] + self.target[idx]
-        comb_y = torch.tensor(self.encode(y_list)).float()
+        comb_y = torch.tensor(y_list)
         y = comb_y[1:]
         prev_y = comb_y[:-1]
         return x.to(self.device), y.to(self.device), prev_y.to(self.device)
