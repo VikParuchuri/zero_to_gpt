@@ -29,7 +29,10 @@ class TextDatasetWrapper:
 
     def __init__(self, vocab_size, device):
         self.sp_vocab_size = vocab_size
+        # Add 3 for start, stop, pad tokens
         self.vocab_size = vocab_size + 3
+        # Add one for the stop token at the end of the sequence
+        self.y_length = self.target_length + 1
 
         self.data = {}
         self.split_data = {}
@@ -61,8 +64,9 @@ class TextDatasetWrapper:
             if not self.target_length:
                 self.target_length = max([len(s) for s in target])
             x = self.pad_sequences(x, self.x_length)
-            target = self.pad_sequences(target, self.target_length)
+            target = self.pad_sequences(target, self.target_length, use_stop=True)
             self.encoded_data[split] = {"x": x, "target": target}
+        self.create_final_sets()
 
     def extract_data(self):
         dataset = load_dataset(self.name, self.version)
@@ -80,6 +84,10 @@ class TextDatasetWrapper:
         """Optional override to reduce length."""
         return x, target
 
+    def create_final_sets(self):
+        """Optional override to split up encoded data sets.  Useful if the initial data doesn't have a validation set, for example."""
+        self.final_data = self.encoded_data
+
     def train_tokenizer(self, tokenizer_data):
         with open(TOKENS_FILE, "w+") as f:
             f.write(tokenizer_data)
@@ -94,8 +102,16 @@ class TextDatasetWrapper:
     def decode_ids(self, ids):
         if isinstance(ids, torch.Tensor):
             ids = list(ids.numpy())
+        new_ids = []
+        for i in ids:
+            i = int(i)
+            if i in [self.stop_token, self.pad_token]:
+                break
+            elif i >= self.sp_vocab_size:
+                continue
+            new_ids.append(i)
 
-        ids = [int(i) for i in ids if int(i) < self.sp_vocab_size]
+        ids = [int(i) for i in new_ids if int(i) < self.sp_vocab_size]
         return self.sp_base.decode(ids)
 
     def decode_batch(self, id_tensor):
@@ -104,10 +120,12 @@ class TextDatasetWrapper:
             decoded.append(self.decode_ids(id_tensor[i, :]))
         return decoded
 
-    def pad_sequences(self, seqs, length):
-        return [self.pad_sequence(s, length) for s in seqs]
+    def pad_sequences(self, seqs, length, use_stop=False):
+        return [self.pad_sequence(s, length, use_stop) for s in seqs]
 
-    def pad_sequence(self, seq, length):
+    def pad_sequence(self, seq, length, use_stop):
+        if use_stop:
+            seq = seq + [self.stop_token]
         if len(seq) < length:
             seq = seq + [self.pad_token] * (length - len(seq))
         return seq
@@ -119,8 +137,8 @@ class TextDatasetWrapper:
 
     def generate_datasets(self, batch_size):
         datasets = {}
-        for split in self.splits:
-            loader = self.generate_dataset(self.encoded_data[split], batch_size)
+        for split in self.final_data:
+            loader = self.generate_dataset(self.final_data[split], batch_size)
             datasets[split] = loader
 
         return datasets
@@ -167,6 +185,19 @@ class OpusDatasetWrapper(TextDatasetWrapper):
                 new_x.append(xi)
                 new_target.append(ti)
         return new_x, new_target
+
+    def create_final_sets(self):
+        x = self.encoded_data["train"]["x"]
+        target = self.encoded_data["train"]["target"]
+
+        valid_len = int(len(x) * 0.1)
+
+        train_x = x[:-valid_len]
+        valid_x = x[-valid_len:]
+        train_target = target[:-valid_len]
+        valid_target = target[-valid_len:]
+
+        self.final_data = {"train": {"x": train_x, "target": train_target}, "validation": {"x": valid_x, "target": valid_target}}
 
 class CNNDatasetWrapper(TextDatasetWrapper):
     name = "cnn_dailymail"
