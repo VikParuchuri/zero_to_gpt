@@ -17,7 +17,7 @@ Gradient descent is an important building block for neural networks.  It's how n
 
 Dense networks are networks where every input is connected to an output.  They're the most general form of a neural network.  These can also be called fully connected networks.
 
-- Lesson: Read the dense network tutorial (coming soon)
+- Lesson: Read the [dense network tutorial](explanations/dense.ipynb)
 - Implementation: [Notebook](notebooks/dense/dense.ipynb) and [class](nnets/dense.py)
 
 ## 3. Convolutional networks
