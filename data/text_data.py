@@ -198,6 +198,9 @@ class OpusDatasetWrapper(TextDatasetWrapper):
 
         self.final_data = {"train": {"x": train_x, "target": train_target}, "validation": {"x": valid_x, "target": valid_target}}
 
+class Opus100DatasetWrapper(OpusDatasetWrapper):
+    name = "opus100"
+
 class CNNDatasetWrapper(TextDatasetWrapper):
     name = "cnn_dailymail"
     version = "3.0.0"

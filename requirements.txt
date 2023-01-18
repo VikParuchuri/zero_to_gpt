@@ -10,3 +10,4 @@ datasets
 torchtext
 sentencepiece
 gdown
+tensor-sensor
