@@ -11,7 +11,7 @@ To use this course, go through each chapter from the beginning.  Read the lesson
 Gradient descent is an important building block for neural networks.  It's how networks train their parameters to fit the data.
 
 - Lesson: Read the [gradient descent tutorial](explanations/linreg.ipynb) and watch the optional [video](https://youtu.be/-cs5D91eBLE)
-- Implementation: [Notebook](notebooks/linreg/linreg.ipynb) and [clean class](nnets/dense.py)
+- Implementation: [Notebook](notebooks/linreg/linreg.ipynb) and [class](nnets/dense.py)
 
 ## 2. Dense networks
 

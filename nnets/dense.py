@@ -21,10 +21,10 @@ class Dense(Module):
         x = np.matmul(x, self.weights)
         if self.add_bias:
             x += self.bias
-        self.hidden = x.copy()
+
         if self.add_activation:
             x = self.activation.forward(x)
-
+        self.hidden = x.copy()
         return x
 
     def backward(self, grad, lr, prev_hidden):
@@ -32,7 +32,7 @@ class Dense(Module):
             grad = self.activation.backward(grad, lr, self.hidden)
         grad = grad.T
         w_grad = np.matmul(grad, prev_hidden).T
-        b_grad = grad.T
+        b_grad = np.mean(grad.T, axis=0)
 
         self.weights -= w_grad * lr
         if self.add_bias:
