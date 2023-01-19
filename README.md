@@ -33,21 +33,27 @@ Recurrent neural networks can process sequences of data.  They are used for time
 - Lesson: Read the recurrent network tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnn/rnn.ipynb)
 
-## 5. Gated recurrent networks
+## 5. Regularization
+
+Regularization prevents overfitting to the training set.  This means that the network can generalize well to new data.
+
+- Lesson: Read the regularization tutorial (coming soon)
+
+## 6. Gated recurrent networks
 
 Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
 
 - Lesson: Read the GRU tutorial (coming soon)
 - Implementation: [Notebook](notebooks/gru/gru.ipynb)
 
-## 6.  Encoder/Decoder RNNs
+## 7.  Encoder/Decoder RNNs
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
 - Lesson: Read the encoder/decoder tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnnencoder/encoder.ipynb)
 
-## 7. Transformers
+## 8. Transformers
 
 Transformers fix the problem vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to focus on the most relevant parts of the input.
 
@@ -60,7 +66,7 @@ Transformers fix the problem vanishing/exploding gradients in RNNs by using atte
 
 You don't have to look through these, but it is recommended.
 
-## 1. Convolutional networks
+## Convolutional networks
 
 Convolutional neural networks are used for working with images and time series.
 
