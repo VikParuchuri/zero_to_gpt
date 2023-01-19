@@ -5,8 +5,10 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import os
 import gdown
+import pathlib
 
-DATA_DIR = os.path.abspath("../../data")
+
+DATA_DIR = pathlib.Path(__file__).parent.resolve()
 
 class CSVDataset(Dataset):
     def __init__(self, x, y, device):
@@ -86,6 +88,11 @@ class CSVDatasetWrapper:
 
         return datasets
 
+    def get_flat_datasets(self):
+        datasets = []
+        for split_name, split in self.final_data.items():
+            datasets.append((split["x"], split["target"]))
+        return datasets
 
 class WeatherDatasetWrapper(CSVDatasetWrapper):
     predictors = ["tmax", "tmin", "rain"]
@@ -110,3 +117,32 @@ class WeatherDatasetWrapper(CSVDatasetWrapper):
                 final_data[split_name]["x"].append(split["x"][j:(j+7)])
                 final_data[split_name]["target"].append(split["target"][j:(j+7)])
         self.final_data = final_data
+
+
+class SkyServerDatasetWrapper(CSVDatasetWrapper):
+    predictors = ["ra", "dec", "u", "g", "r", "i", "z", "run", "camcol", "field", "redshift", "plate", "mjd"]
+    target = "class"
+    file_name = "skyserver.csv"
+    splits = ["train", "validation", "test"]
+    download_link = "https://drive.google.com/file/d/1gYwg5YyaV3zUX-07bLCol8E0M-uX__zX/view?usp=share_link"
+
+    def clean_data(self):
+        self.scaler = StandardScaler()
+        data = self.data.ffill()
+        data[self.predictors] = self.scaler.fit_transform(data[self.predictors])
+        data[self.target] = data[self.target].replace({"STAR": 0, "GALAXY": 1, "QSO": 2})
+        self.data = data
+
+class SkyServerBinaryDatasetWrapper(SkyServerDatasetWrapper):
+    predictors = ["ra", "dec", "u", "g", "r", "i", "z", "run", "camcol", "field", "redshift", "plate", "mjd"]
+    target = "class"
+    file_name = "skyserver.csv"
+    splits = ["train", "validation", "test"]
+    download_link = "https://drive.google.com/file/d/1gYwg5YyaV3zUX-07bLCol8E0M-uX__zX/view?usp=share_link"
+
+    def clean_data(self):
+        self.scaler = StandardScaler()
+        data = self.data.ffill()
+        data[self.predictors] = self.scaler.fit_transform(data[self.predictors])
+        data[self.target] = data[self.target].replace({"STAR": 0, "GALAXY": 1, "QSO": 0})
+        self.data = data

@@ -8,6 +8,7 @@ class Dense(Module):
         self.add_bias = bias
         self.add_activation = activation
         self.hidden = None
+        self.prev_hidden = None
 
         np.random.seed(seed)
         k = math.sqrt(1 / input_size)
@@ -18,6 +19,7 @@ class Dense(Module):
         super().__init__()
 
     def forward(self, x):
+        self.prev_hidden = x.copy()
         x = np.matmul(x, self.weights)
         if self.add_bias:
             x += self.bias
@@ -27,11 +29,11 @@ class Dense(Module):
         self.hidden = x.copy()
         return x
 
-    def backward(self, grad, lr, prev_hidden):
+    def backward(self, grad, lr):
         if self.add_activation:
             grad = self.activation.backward(grad, lr, self.hidden)
         grad = grad.T
-        w_grad = np.matmul(grad, prev_hidden).T
+        w_grad = np.matmul(grad, self.prev_hidden).T
         b_grad = np.mean(grad.T, axis=0)
 
         self.weights -= w_grad * lr

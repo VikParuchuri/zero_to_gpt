@@ -15,5 +15,5 @@ class Module():
     def forward(self, x):
         pass
 
-    def backward(self, grad, lr, prev_hidden):
+    def backward(self, grad, lr):
         pass
