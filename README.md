@@ -26,40 +26,46 @@ In the last two lessons, we learned how to perform regression with neural networ
 
 - Lesson: Read the [classification tutorial](explanations/classification.ipynb)
 
-## 4. Convolutional networks
-
-Convolutional neural networks are used for working with images and time series.
-
-- Lesson: Read the convolutional network tutorial (coming soon)
-- Implementation: [Notebook](notebooks/cnn/cnn.ipynb) and [class](nnets/conv.py)
-
-## 5. Recurrent networks
+## 4. Recurrent networks
 
 Recurrent neural networks can process sequences of data.  They are used for time series and natural language processing.
 
 - Lesson: Read the recurrent network tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnn/rnn.ipynb)
 
-## 6. Gated recurrent networks
+## 5. Gated recurrent networks
 
 Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
 
 - Lesson: Read the GRU tutorial (coming soon)
 - Implementation: [Notebook](notebooks/gru/gru.ipynb)
 
-## 7.  Encoder/Decoder RNNs
+## 6.  Encoder/Decoder RNNs
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
 - Lesson: Read the encoder/decoder tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnnencoder/encoder.ipynb)
 
-## 8. Transformers
+## 7. Transformers
 
 Transformers fix the problem vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to focus on the most relevant parts of the input.
 
 - Read the transformer tutorial (coming soon)
 - Look through the notebook implementation (coming soon)
+
+## More Chapters Coming Soon
+
+# Optional Chapters
+
+You don't have to look through these, but it is recommended.
+
+## 1. Convolutional networks
+
+Convolutional neural networks are used for working with images and time series.
+
+- Lesson: Read the convolutional network tutorial (coming soon)
+- Implementation: [Notebook](notebooks/cnn/cnn.ipynb) and [class](nnets/conv.py)
 
 # Installation
 
