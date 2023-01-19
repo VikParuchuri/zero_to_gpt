@@ -33,6 +33,7 @@ class Conv(Module):
         super().__init__()
 
     def forward(self, x):
+        self.prev_hidden = x.copy()
         new_x = x.shape[1] - (self.kernel_x - 1)
         new_y = x.shape[2] - (self.kernel_y - 1)
         output = np.zeros((self.output_channels, new_x, new_y))
@@ -48,23 +49,24 @@ class Conv(Module):
             for next_channel in range(self.output_channels):
                 output[next_channel, :] += self.bias[next_channel]
 
-        self.hidden = output.copy()
+
         if self.add_activation:
             output = self.activation.forward(output)
+        self.hidden = output.copy()
         return output
 
-    def backward(self, grad, lr, prev_hidden):
+    def backward(self, grad, lr):
         grad = grad.reshape(self.hidden.shape)
         if self.add_activation:
             grad = self.activation.backward(grad, lr, self.hidden)
 
         _, grad_x, grad_y = grad.shape
-        new_grad = np.zeros(prev_hidden.shape)
+        new_grad = np.zeros(self.prev_hidden.shape)
         # Kernel weight update
         for channel in range(self.input_channels):
             # With multi-channel output, you need to loop across the output grads to link to input channel kernels
             # Each kernel gets a unique update
-            flat_input = unroll_image(prev_hidden[channel, :], grad_x, grad_y)
+            flat_input = unroll_image(self.prev_hidden[channel, :], grad_x, grad_y)
             for next_channel in range(self.output_channels):
                 # Kernel update
                 channel_grad = grad[next_channel, :]
@@ -87,7 +89,7 @@ class Conv(Module):
             for channel in range(self.input_channels):
                 # Grad to lower layer
                 flipped_kernel = np.flip(self.weights[channel, next_channel, :], axis=[0, 1])
-                updated_grad = convolve(flat_padded, flipped_kernel).reshape(prev_hidden.shape[1], prev_hidden.shape[2])
+                updated_grad = convolve(flat_padded, flipped_kernel).reshape(self.prev_hidden.shape[1], self.prev_hidden.shape[2])
                 # Since we're multiplying each input by multiple kernel values, reduce the gradient accordingly
                 # This will reduce the edges more than necessary (they contribute to fewer output values), but is simple to implement
                 new_grad[channel, :] += updated_grad / math.prod(flipped_kernel.shape)
