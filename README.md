@@ -63,8 +63,8 @@ Encoder/decoders are used for NLP tasks when the output isn't the same length as
 
 Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
 
-- Read the transformer tutorial (coming soon)
-- Look through the notebook implementation (coming soon)
+- Lesson: Read the transformer tutorial (coming soon)
+- Implementation: [Notebook](notebooks/transformer/transformer.ipynb)
 
 ## More Chapters Coming Soon
 
