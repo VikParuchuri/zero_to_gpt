@@ -11,10 +11,9 @@ import pathlib
 DATA_DIR = pathlib.Path(__file__).parent.resolve()
 
 class CSVDataset(Dataset):
-    def __init__(self, x, y, device):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.device = device
 
     def __len__(self):
         return len(self.x)
@@ -22,7 +21,7 @@ class CSVDataset(Dataset):
     def __getitem__(self, idx):
         x = torch.from_numpy(self.x[idx]).float()
         y = torch.from_numpy(self.y[idx]).float()
-        return x.to(self.device), y.to(self.device)
+        return x, y
 
 
 class CSVDatasetWrapper:
@@ -33,8 +32,7 @@ class CSVDatasetWrapper:
     download_link = None
     dataset_cls = CSVDataset
 
-    def __init__(self, device):
-        self.device = device
+    def __init__(self):
 
         fpath = os.path.join(DATA_DIR, self.file_name)
 
@@ -74,7 +72,7 @@ class CSVDatasetWrapper:
 
 
     def generate_dataset(self, x, target, batch_size):
-        dataset = self.dataset_cls(x, target, self.device)
+        dataset = self.dataset_cls(x, target)
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         return loader
 

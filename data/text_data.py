@@ -27,7 +27,7 @@ class TextDatasetWrapper:
     x_length = None
     target_length = None
 
-    def __init__(self, vocab_size, device):
+    def __init__(self, vocab_size):
         self.sp_vocab_size = vocab_size
         self.vocab_size = vocab_size + 1
         # Add one for the stop token at the end of the sequence
@@ -36,7 +36,6 @@ class TextDatasetWrapper:
         self.data = {}
         self.split_data = {}
         self.encoded_data = {}
-        self.device = device
         self.unk_token = 0
         self.start_token = 1
         self.stop_token = 2
@@ -130,7 +129,7 @@ class TextDatasetWrapper:
         return seq
 
     def generate_dataset(self, data, batch_size):
-        dataset = TextDataset(data["x"], data["target"], self.device, self)
+        dataset = TextDataset(data["x"], data["target"], self)
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         return loader
 
@@ -143,10 +142,9 @@ class TextDatasetWrapper:
         return datasets
 
 class TextDataset(Dataset):
-    def __init__(self, x, target, device, wrapper):
+    def __init__(self, x, target, wrapper):
         self.x = x
         self.target = target
-        self.device = device
         self.start_token = wrapper.start_token
         self.vocab_size = wrapper.vocab_size
 
@@ -163,7 +161,7 @@ class TextDataset(Dataset):
         comb_y = torch.tensor(y_list)
         y = comb_y[1:]
         prev_y = comb_y[:-1]
-        return x.to(self.device), y.to(self.device), prev_y.to(self.device)
+        return x, y, prev_y
 
 class OpusDatasetWrapper(TextDatasetWrapper):
     name = "opus_books"
