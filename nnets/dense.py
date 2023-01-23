@@ -32,13 +32,13 @@ class Dense(Module):
     def backward(self, grad, lr):
         if self.add_activation:
             grad = self.activation.backward(grad, lr, self.hidden)
-        grad = grad.T
-        w_grad = np.matmul(grad, self.prev_hidden).T
-        b_grad = np.mean(grad.T, axis=0)
+
+        w_grad = self.prev_hidden.T @ grad
+        b_grad = np.mean(grad, axis=0)
 
         self.weights -= w_grad * lr
         if self.add_bias:
             self.bias -= b_grad * lr
 
-        grad = np.matmul(self.weights, grad).T
+        grad = (self.weights @ grad.T).T
         return grad
