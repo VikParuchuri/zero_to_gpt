@@ -2,7 +2,7 @@
 
 This course will get you from no knowledge of deep learning to training a GPT model.  We'll start with the basics, then build up to complex networks.
 
-To use this course, go through each chapter from the beginning.  Read the lessons, or watch the optional videos.  Then, look through the implementations to solidify your understanding.  I also recommend implementing each algorithm on your own afterwards.
+To use this course, go through each chapter from the beginning.  Read the lessons, or watch the optional videos.  Then look through the implementations to solidify your understanding.  I also recommend implementing each algorithm on your own.
 
 # Course Outline
 
@@ -28,7 +28,7 @@ In the last two lessons, we learned how to perform regression with neural networ
 
 ## 4. Recurrent networks
 
-Recurrent neural networks can process sequences of data.  They are used for time series and natural language processing.
+Recurrent neural networks can process sequences of data.  They're used for time series and natural language processing.
 
 - Lesson: Read the recurrent network tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnn/rnn.ipynb)
@@ -39,32 +39,36 @@ Regularization prevents overfitting to the training set.  This means that the ne
 
 - Lesson: Read the regularization tutorial (coming soon)
 
-## 6. Gated recurrent networks
+## 6. PyTorch
+
+PyTorch is a framework for deep learning that automates the backward pass of neural networks.  This makes it simpler to implement complex networks.
+
+- Lesson: Read the PyTorch tutorial (coming soon)
+
+## 7. Gated recurrent networks
 
 Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
 
 - Lesson: Read the GRU tutorial (coming soon)
 - Implementation: [Notebook](notebooks/gru/gru.ipynb)
 
-## 7.  Encoder/Decoder RNNs
+## 8.  Encoder/Decoder RNNs
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
 - Lesson: Read the encoder/decoder tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnnencoder/encoder.ipynb)
 
-## 8. Transformers
+## 9. Transformers
 
-Transformers fix the problem vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to focus on the most relevant parts of the input.
+Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
 
-- Read the transformer tutorial (coming soon)
-- Look through the notebook implementation (coming soon)
+- Lesson: Read the transformer tutorial (coming soon)
+- Implementation: [Notebook](notebooks/transformer/transformer.ipynb)
 
 ## More Chapters Coming Soon
 
 # Optional Chapters
-
-You don't have to look through these, but it is recommended.
 
 ## Convolutional networks
 

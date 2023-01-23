@@ -11,3 +11,4 @@ torchtext
 sentencepiece
 gdown
 tensor-sensor
+torchinfo
