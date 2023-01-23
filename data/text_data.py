@@ -36,10 +36,9 @@ class TextDatasetWrapper:
         self.data = {}
         self.split_data = {}
         self.encoded_data = {}
-        self.unk_token = 0
         self.start_token = 1
         self.stop_token = 2
-        self.pad_token = vocab_size
+        self.pad_token = 0
 
         self.extract_data()
         tokenizer_data = ""
@@ -146,6 +145,7 @@ class TextDataset(Dataset):
         self.x = x
         self.target = target
         self.start_token = wrapper.start_token
+        self.pad_token = wrapper.pad_token
         self.vocab_size = wrapper.vocab_size
 
     def encode(self, tokens):
