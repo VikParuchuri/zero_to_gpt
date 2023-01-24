@@ -10,7 +10,7 @@ To use this course, go through each chapter from the beginning.  Read the lesson
 
 Get an overview of the course and what we'll learn.  Includes some math and NumPy fundamentals you'll need for deep learning.
 
-- Lesson: Read the intro (coming soon)
+- Lesson: Read the [intro](explanations/intro.ipynb)
 
 ## 1. Gradient Descent
 
