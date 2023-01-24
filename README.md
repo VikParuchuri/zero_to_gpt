@@ -6,6 +6,12 @@ To use this course, go through each chapter from the beginning.  Read the lesson
 
 # Course Outline
 
+## 0. Introduction
+
+Get an overview of the course and what we'll learn.  Includes some math and NumPy fundamentals you'll need for deep learning.
+
+- Lesson: Read the intro (coming soon)
+
 ## 1. Gradient Descent
 
 Gradient descent is how neural networks train their parameters to match the data.  It's the "learning" part of deep learning.
@@ -20,7 +26,7 @@ Dense networks are the basic form of a neural network, where every input is conn
 - Lesson: Read the [dense network tutorial](explanations/dense.ipynb)
 - Implementation: [Notebook](notebooks/dense/dense.ipynb) and [class](nnets/dense.py)
 
-## 3. Classifiction with neural networks
+## 3. Classification with neural networks
 
 In the last two lessons, we learned how to perform regression with neural networks.  Now, we'll learn how to perform classification.
 
