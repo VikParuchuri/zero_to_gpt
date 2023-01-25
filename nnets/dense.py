@@ -40,5 +40,5 @@ class Dense(Module):
         if self.add_bias:
             self.bias -= b_grad * lr
 
-        grad = (self.weights @ grad.T).T
+        grad = grad @ self.weights.T
         return grad

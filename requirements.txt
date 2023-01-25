@@ -12,3 +12,4 @@ sentencepiece
 gdown
 tensor-sensor
 torchinfo
+sympy
