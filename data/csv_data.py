@@ -42,6 +42,8 @@ class CSVDatasetWrapper:
         data = pd.read_csv(fpath)
         self.data = data
         self.clean_data()
+        # Ensure we get same split every time
+        np.random.seed(0)
         self.split_x_target()
         self.create_final_sets()
 
