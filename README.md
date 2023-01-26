@@ -58,7 +58,7 @@ Gated recurrent networks help RNNs process long sequences by helping networks fo
 - Lesson: Read the GRU tutorial (coming soon)
 - Implementation: [Notebook](notebooks/gru/gru.ipynb)
 
-## 8.  Encoder/Decoder RNNs
+## 8.  Encoders and Decoders
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
@@ -71,6 +71,13 @@ Transformers fix the problem of vanishing/exploding gradients in RNNs by using a
 
 - Lesson: Read the transformer tutorial (coming soon)
 - Implementation: [Notebook](notebooks/transformer/transformer.ipynb)
+
+## 10. Efficient Transformers
+
+GPT models take a long time to train.  We can reduce that time by using more GPUs, but we don't all have access to GPU clusters.  To reduce training time, we'll incorporate some recent advances to make the transformer model more efficient.
+
+- Lesson: Read the efficient transformer tutorial (coming soon)
+- Implementation: Notebook coming soon
 
 ## More Chapters Coming Soon
 
