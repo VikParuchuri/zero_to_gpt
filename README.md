@@ -36,7 +36,7 @@ In the last two lessons, we learned how to perform regression with neural networ
 
 Recurrent neural networks can process sequences of data.  They're used for time series and natural language processing.
 
-- Lesson: Read the recurrent network tutorial (coming soon)
+- Lesson: Read the [recurrent network tutorial](explanations/rnn.ipynb)
 - Implementation: [Notebook](notebooks/rnn/rnn.ipynb)
 
 ## 5. Regularization
