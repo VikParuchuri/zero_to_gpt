@@ -13,3 +13,4 @@ gdown
 tensor-sensor
 torchinfo
 sympy
+einops
