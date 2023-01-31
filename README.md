@@ -23,7 +23,7 @@ Gradient descent is how neural networks train their parameters to match the data
 
 Dense networks are the basic form of a neural network, where every input is connected to an output.  These can also be called fully connected networks.
 
-- Lesson: Read the [dense network tutorial](explanations/dense.ipynb)
+- Lesson: Read the [dense network tutorial](explanations/dense.ipynb) and watch the optional [video](https://youtu.be/MQzG1hfhow4)
 - Implementation: [Notebook](notebooks/dense/dense.ipynb) and [class](nnets/dense.py)
 
 ## 3. Classification with neural networks
@@ -58,26 +58,33 @@ Gated recurrent networks help RNNs process long sequences by helping networks fo
 - Lesson: Read the GRU tutorial (coming soon)
 - Implementation: [Notebook](notebooks/gru/gru.ipynb)
 
-## 8.  Encoders and Decoders
+## 8. Data
+
+If you want to train a deep learning model, you need data.  Gigabytes of it.  We'll discuss how you can get this data and process it.
+
+- Lesson: Read the data tutorial (coming soon)
+- Implementation: Notebook coming soon
+
+## 9.  Encoders and Decoders
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
 - Lesson: Read the encoder/decoder tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnnencoder/encoder.ipynb)
 
-## 9. Transformers
+## 10. Transformers
 
 Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
 
 - Lesson: Read the transformer tutorial (coming soon)
 - Implementation: [Notebook](notebooks/transformer/transformer.ipynb)
 
-## 10. Efficient Transformers
+## 11. Efficient Transformers
 
 GPT models take a long time to train.  We can reduce that time by using more GPUs, but we don't all have access to GPU clusters.  To reduce training time, we'll incorporate some recent advances to make the transformer model more efficient.
 
 - Lesson: Read the efficient transformer tutorial (coming soon)
-- Implementation: Notebook coming soon
+- Implementation: [Notebook](notebooks/eff_transformer/eff_transformer.ipynb)
 
 ## More Chapters Coming Soon
 

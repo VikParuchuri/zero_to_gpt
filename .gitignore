@@ -8,6 +8,7 @@ tokens.txt
 *.vocab
 *.model
 wandb
+*_tokenizer/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
