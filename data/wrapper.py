@@ -133,6 +133,9 @@ class DatasetWrapper:
         tokenizer = PreTrainedTokenizerFast.from_pretrained(tokenizer_file)
         return tokenizer
 
+    def decode_ids(self, ids):
+        return self.tokenizer.decode(ids, skip_special_tokens=True)
+
 
 class WikiTextDataset(DatasetWrapper):
     dataset_name = "wikitext"

@@ -1,4 +1,5 @@
-from datasketch import MinHash, MinHashLSH
+# Idea from https://github.com/huggingface/transformers/tree/main/examples/research_projects/codeparrot
+from datasketch import MinHash, MinHashLSH, LeanMinHash
 from multiprocessing import Manager
 from collections import defaultdict
 from itertools import chain
@@ -15,7 +16,8 @@ def hash_examples(examples, idxs, queue):
     hashes = []
     for idx, ex in zip(idxs, examples["tokens"]):
         min_hash = hash_tokens(ex)
-        hashes.append((idx, min_hash))
+        lean_hash = LeanMinHash(min_hash)
+        hashes.append((idx, lean_hash))
     queue.put(hashes)
 
 def index_hashes(examples, index, dup_store):

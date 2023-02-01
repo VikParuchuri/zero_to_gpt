@@ -51,35 +51,28 @@ PyTorch is a framework for deep learning that automates the backward pass of neu
 
 - Lesson: Read the PyTorch tutorial (coming soon)
 
-## 7. Gated recurrent networks
-
-Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
-
-- Lesson: Read the GRU tutorial (coming soon)
-- Implementation: [Notebook](notebooks/gru/gru.ipynb)
-
-## 8. Data
+## 7. Data
 
 If you want to train a deep learning model, you need data.  Gigabytes of it.  We'll discuss how you can get this data and process it.
 
 - Lesson: Read the data tutorial (coming soon)
 - Implementation: Notebook coming soon
 
-## 9.  Encoders and Decoders
+## 8.  Encoders and Decoders
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
 - Lesson: Read the encoder/decoder tutorial (coming soon)
 - Implementation: [Notebook](notebooks/rnnencoder/encoder.ipynb)
 
-## 10. Transformers
+## 9. Transformers
 
 Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
 
 - Lesson: Read the transformer tutorial (coming soon)
 - Implementation: [Notebook](notebooks/transformer/transformer.ipynb)
 
-## 11. Efficient Transformers
+## 10. Efficient Transformers
 
 GPT models take a long time to train.  We can reduce that time by using more GPUs, but we don't all have access to GPU clusters.  To reduce training time, we'll incorporate some recent advances to make the transformer model more efficient.
 
@@ -96,6 +89,13 @@ Convolutional neural networks are used for working with images and time series.
 
 - Lesson: Read the convolutional network tutorial (coming soon)
 - Implementation: [Notebook](notebooks/cnn/cnn.ipynb) and [class](nnets/conv.py)
+
+## Gated recurrent networks
+
+Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
+
+- Lesson: Read the GRU tutorial (coming soon)
+- Implementation: [Notebook](notebooks/gru/gru.ipynb)
 
 # Installation
 
