@@ -182,15 +182,14 @@ class OpusBooksDataset(DatasetWrapper):
     def split_func(self, examples):
         en_ids = []
         es_ids = []
+        en_lens = []
         for ids, tokens in zip(examples[self.ids_key], examples[self.tokens_key]):
             split_ind = tokens.index("<s>")
             en_id = ids[:split_ind]
             es_id = ids[split_ind+1:]
             # Filter out sequences that are too long or too short
             if self.min_length <= len(en_id) <= self.max_length and self.min_length <= len(es_id) <= self.max_length:
-                # Pad sequences
-                en_id += [self.tokenizer.pad_token_id] * (self.max_length - len(en_id))
-                es_id += [self.tokenizer.pad_token_id] * (self.max_length - len(es_id))
+                en_lens.append(len(en_id))
                 en_ids.append(en_id)
                 es_ids.append(es_id)
-        return {"en_ids": en_ids, "es_ids": es_ids}
+        return {"en_ids": en_ids, "es_ids": es_ids, "en_lens": en_lens}
