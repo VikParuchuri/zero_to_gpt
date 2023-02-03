@@ -134,7 +134,10 @@ class DatasetWrapper:
         return tokenizer
 
     def decode_ids(self, ids):
-        return self.tokenizer.decode(ids, skip_special_tokens=True)
+        # Add a batch dimension if needed
+        if len(ids.shape) == 1:
+            ids = ids.unsqueeze(0)
+        return self.tokenizer.batch_decode(ids, skip_special_tokens=True)
 
 
 class WikiTextDataset(DatasetWrapper):
