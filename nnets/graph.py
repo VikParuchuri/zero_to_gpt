@@ -1,18 +1,33 @@
 import graphviz
 from copy import deepcopy
 from IPython.display import Latex
+import numpy as np
+
+def reshape_grad(orig, grad):
+    if grad.shape != orig.shape:
+        try:
+            summed = np.sum(grad, axis=-1)
+            if summed.shape != orig.shape:
+                summed = summed.reshape(orig.shape)
+        except ValueError:
+            summed = np.sum(grad, axis=0)
+        if summed.shape != orig.shape:
+            summed = summed.reshape(orig.shape)
+        return summed
+    return grad
 
 class Node():
     def __init__(self, *args, out=None, desc=None):
         """
         Initialize a node.
-        :param args: Any arguments needs to compute the forward pass.
+        :param args: Any arguments needed to compute the forward pass.
         :param out: A string representing the output of the node.
         :param desc: A string describing the node.
         """
         self.nodes = args
         self.desc = desc
         self.out = out
+        self.needs_grad = False
         if self.desc and not self.out:
             self.out = self.desc
 
@@ -33,7 +48,7 @@ class Node():
             node_id = str(id(node))
             node.visualize(graph, backward=backward)
             if backward:
-                label = f"dL/(d{node.out})"
+                label = f"d({node.out})"
                 # ensure that x and y don't get a grad label
                 if isinstance(node, Parameter) and not node.needs_grad:
                     label = None
@@ -45,8 +60,9 @@ class Node():
         """
         Zero out the gradients on each parameter.
         """
-        self.grad = 0
-        self.derivative = []
+        if self.needs_grad:
+            self.grad = None
+            self.derivative = []
         if self.nodes is None:
             return
         for node in self.nodes:
@@ -72,7 +88,7 @@ class Node():
             args.append(node.apply_bwd(grad))
 
     def generate_graph(self, backward=False):
-        graph = graphviz.Digraph('fwd_pass', format="png")
+        graph = graphviz.Digraph('fwd_pass', format="png", strict=True)
         graph.attr(rankdir='LR')
         self.visualize(graph, backward=backward)
         return graph
@@ -81,7 +97,8 @@ class Node():
         if chain is None:
             chain = []
         if self.nodes is None:
-            self.derivative.append(chain)
+            if self.needs_grad:
+                self.derivative.append(chain)
             return
         for node in self.nodes:
             node_chain = deepcopy(chain)
@@ -92,7 +109,7 @@ class Node():
     def display_partial_derivative(self):
         flat_eqs = ["*".join(item) for item in self.derivative]
         lhs = f"\\frac{{\partial L}}{{\partial {self.out}}}"
-        rhs = "+".join(flat_eqs)
+        rhs = " + \\\\".join(flat_eqs)
         return f"{lhs} = {rhs}"
 
     def forward(self, *args):
@@ -115,4 +132,9 @@ class Parameter(Node):
         return self.data
 
     def backward(self, grad):
+        if not self.needs_grad:
+            return
+        grad = reshape_grad(self.data, grad)
+        if self.grad is None:
+            self.grad = np.zeros_like(self.data)
         self.grad += grad
