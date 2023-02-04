@@ -85,7 +85,7 @@ Transformers fix the problem of vanishing/exploding gradients in RNNs by using a
 
 ## 11. GPU programming with triton
 
-To train a large neural network, we'll need to use a GPU.  PyTorch can automatically use a GPU, but not all operators are properly fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
+To train a large neural network, we'll need to use GPUs.  PyTorch can automatically use GPUs, but not all operators are fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
 
 - Lesson: Read the GPU programming tutorial (coming soon)
 - Implementation: Notebook coming soon
