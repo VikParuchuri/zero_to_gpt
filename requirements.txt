@@ -2,15 +2,13 @@ pandas
 numpy
 scikit-learn
 Pillow
-scikit-image
 torch
-polars
 matplotlib
 datasets
-torchtext
-sentencepiece
 gdown
 tensor-sensor
 torchinfo
 sympy
 einops
+graphviz
+tokenizers
