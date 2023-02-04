@@ -1,274 +1,198 @@
-from datasets import load_dataset
-import torch
-from torch.utils.data import Dataset
-from torch.utils.data import DataLoader
-from torchtext.data.functional import generate_sp_model
-from torchtext.data.functional import load_sp_model, sentencepiece_numericalizer
-import numpy as np
-import sentencepiece as spm
+from tokenizers import SentencePieceBPETokenizer
+from transformers import PreTrainedTokenizerFast
+import datasets
+import os
+import re
 
-TOKENS_FILE = "tokens.txt"
+def chunk_tokens_and_ids(examples, chunk_size, ids_key, tokens_key):
+    chunked_ids = []
+    chunked_tokens = []
+    for id, token in zip(examples[ids_key], examples[tokens_key]):
+        chunked_ids += [id[i:i + chunk_size] for i in range(0, len(id), chunk_size)]
+        chunked_tokens += [token[i:i + chunk_size] for i in range(0, len(token), chunk_size)]
+    return {tokens_key: chunked_tokens, ids_key: chunked_ids}
 
-def chunk_text(texts, chunk_length, y_chunk_length):
-    return [(t[:chunk_length], t[chunk_length:(chunk_length + y_chunk_length)]) for t in texts if (chunk_length + y_chunk_length) <= len(t)]
+def get_tokens_and_ids(examples, tokenizer, text_key, ids_key, tokens_key, padding=False):
+    tokens = []
+    ids = []
+    for example in examples[text_key]:
+        token = tokenizer.tokenize(example, padding=padding)
+        id = tokenizer.convert_tokens_to_ids(token)
+        tokens.append(token)
+        ids.append(id)
+    return {tokens_key: tokens, ids_key: ids}
 
-def load_data_list(data, key, subset):
-    selection = data[key]
-    if subset:
-        selection = selection[subset]
-    return selection
+def calc_token_ratio(examples, ids_key, data_key):
+    ratios = []
+    for id, data in zip(examples[ids_key], examples[data_key]):
+        if len(data) == 0:
+            ratios.append(0)
+        else:
+            ratios.append(len(id) / len(data))
+    return {"token_ratio": ratios}
 
-class TextDatasetWrapper:
-    name = None
-    version = None
-    splits = ["train", "test", "validation"]
-    split_lengths = None
-    subset = None
-    x_length = None
-    target_length = None
-    add_stop = True
+class DatasetWrapper:
+    dataset_name = None
+    data_config = None
+    data_key = "text"
+    ids_key = "input_ids"
+    tokens_key = "tokens"
+    max_token_ratio = .33
+    run_combine_func = False
+    run_split_func = False
+    run_chunking = True
 
-    def __init__(self, vocab_size):
-        self.sp_vocab_size = vocab_size
-        self.vocab_size = vocab_size + 1
-        # Add one for the stop token at the end of the sequence
-        self.y_length = self.target_length + 1
+    def __init__(self, download_split="train", model_max_length=512, processes=None, download_split_pct=None, tokenizer_vocab=5000, min_token_freq=2):
+        self.download_split_pct = download_split_pct
+        self.tokenizer_filename = f"{self.dataset_name}_{download_split_pct}_tokenizer"
+        self.model_max_length = model_max_length
+        self.processes = processes
+        self.download_split = download_split
+        self.tokenizer_vocab = tokenizer_vocab
+        self.min_token_freq = min_token_freq
+        self.tokenizer = None
 
-        self.data = {}
-        self.split_data = {}
-        self.encoded_data = {}
-        self.start_token = 1
-        self.stop_token = 2
-        self.pad_token = 0
+    def dataset_info(self):
+        data = datasets.load_dataset_builder(self.dataset_name, self.data_config)
+        print(data.info.description)
+        print(data.info.splits)
+        print(data.info.features)
 
-        self.extract_data()
-        for split in self.splits:
-            x, target = self.split_x_target(self.data[split])
-            self.split_data[split] = {"x": x, "target": target}
-        self.train_tokenizer_with_data()
+    def process_dataset(self):
+        data = self.load_dataset()
+        if self.run_combine_func:
+            data = data.map(lambda x: self.combine_func(x), batched=True, remove_columns=data.column_names, num_proc=self.processes, desc="Combining")
 
-        self.model_file = f"{self.name}.model"
-        self.sp_model = load_sp_model(self.model_file)
-        self.encoding_generator = sentencepiece_numericalizer(self.sp_model)
-        self.sp_base = spm.SentencePieceProcessor(self.model_file)
+        self.tokenizer = self.get_tokenizer(data[self.data_key])
+        tokenized = self.tokenize_dataset(data, self.tokenizer)
+        tokenized = self.filter_tokenized_text(tokenized)
+        if self.run_chunking:
+            tokenized = self.chunk_tokens(tokenized)
+        if self.run_split_func:
+            tokenized = tokenized.map(lambda x: self.split_func(x), batched=True, remove_columns=tokenized.column_names, num_proc=self.processes, desc="Splitting")
+        tokenized = tokenized.with_format("torch")
+        return tokenized
 
-        for split in self.splits:
-            x, target = self.encode_data(self.split_data[split]["x"], self.split_data[split]["target"])
-            x, target = self.trim_length(x, target)
-            if not self.x_length:
-                self.x_length = max([len(s) for s in x])
-            if not self.target_length:
-                self.target_length = max([len(s) for s in target])
-            x = self.pad_sequences(x, self.x_length)
-            target = self.pad_sequences(target, self.y_length, use_stop=self.add_stop)
-            self.encoded_data[split] = {"x": x, "target": target}
-        self.create_final_sets()
+    def combine_func(self, examples):
+        """A function that combines examples in the dataset."""
+        raise NotImplementedError
 
-    def extract_data(self):
-        dataset = load_dataset(self.name, self.version)
-        for i, split in enumerate(self.splits):
-            s_data = load_data_list(dataset, split, self.subset)
-            if self.split_lengths and self.split_lengths[i]:
-                s_data = s_data[:self.split_lengths[i]]
-            self.data[split] = s_data
+    def split_func(self, examples):
+        """A function that splits examples in the dataset."""
+        raise NotImplementedError
 
-    def train_tokenizer_with_data(self):
-        tokenizer_data = ""
-        for split in self.splits:
-            tokenizer_data += "\n".join(self.split_data[split]["x"])
-            tokenizer_data += "\n".join(self.split_data[split]["target"])
-        self.train_tokenizer(tokenizer_data)
+    def load_dataset(self):
+        split_str = self.download_split
+        if self.download_split_pct:
+            split_str = f"{self.download_split}[:{self.download_split_pct}]"
+        if not self.data_config:
+            data = datasets.load_dataset(self.dataset_name, split=split_str, num_proc=self.processes)
+        else:
+            data = datasets.load_dataset(self.dataset_name, self.data_config, split=split_str, num_proc=self.processes)
+        return data
 
-    def split_x_target(self, split):
-        """Override.  Should return x and y"""
-        pass
+    def tokenize_dataset(self, data, tokenizer):
+        data = data.map(lambda examples: get_tokens_and_ids(examples, tokenizer, self.data_key, self.ids_key, self.tokens_key), batched=True, num_proc=self.processes, desc="Tokenizing")
+        return data
 
-    def trim_length(self, x, target):
-        """Optional override to reduce length."""
-        return x, target
+    def filter_tokenized_text(self, data):
+        data = data.map(lambda x: calc_token_ratio(x, self.ids_key, self.data_key), batched=True, num_proc=self.processes, desc="Filtering")
+        data = data.filter(lambda x: 0 < x["token_ratio"] < self.max_token_ratio, num_proc=self.processes, desc="Filtering")
+        return data
 
-    def create_final_sets(self):
-        """Optional override to split up encoded data sets.  Useful if the initial data doesn't have a validation set, for example."""
-        self.final_data = self.encoded_data
+    def chunk_tokens(self, data):
+        data_chunks = data.map(lambda examples: chunk_tokens_and_ids(examples, self.model_max_length, self.ids_key, self.tokens_key), batched=True, remove_columns=data.column_names, num_proc=self.processes, desc="Chunking")
+        return data_chunks
 
-    def train_tokenizer(self, tokenizer_data):
-        with open(TOKENS_FILE, "w+") as f:
-            f.write(tokenizer_data)
+    def get_tokenizer(self, data=None):
+        if os.path.exists(self.tokenizer_filename):
+            tokenizer = self.load_tokenizer(self.tokenizer_filename)
+        else:
+            tokenizer = self.train_tokenizer(data, self.tokenizer_filename)
+        return tokenizer
 
-        generate_sp_model(TOKENS_FILE, vocab_size=self.sp_vocab_size, model_prefix=self.name)
+    def train_tokenizer(self, text, save_file):
+        special_tokens = ["<pad>", "<s>", "</s>", "<unk>"]
+        sptokenizer = SentencePieceBPETokenizer()
+        sptokenizer.train_from_iterator(
+            text,
+            vocab_size=self.tokenizer_vocab,
+            min_frequency=self.min_token_freq,
+            show_progress=True,
+            special_tokens=special_tokens
+        )
 
-    def encode_data(self, x, target):
-        encoded_x = list(self.encoding_generator(x))
-        encoded_target = list(self.encoding_generator(target))
-        return encoded_x, encoded_target
+        tokenizer = PreTrainedTokenizerFast(tokenizer_object=sptokenizer, special_tokens=special_tokens)
+        for attr, token in zip(["pad_token", "bos_token", "eos_token", "unk_token"], special_tokens):
+            setattr(tokenizer, attr, token)
+            setattr(tokenizer, f"{attr}_id", sptokenizer.token_to_id(token))
+        tokenizer.save_pretrained(save_file)
+        return tokenizer
+
+    def load_tokenizer(self, tokenizer_file):
+        tokenizer = PreTrainedTokenizerFast.from_pretrained(tokenizer_file)
+        return tokenizer
 
     def decode_ids(self, ids):
-        if isinstance(ids, torch.Tensor):
-            ids = list(ids.numpy())
-        new_ids = []
-        for i in ids:
-            i = int(i)
-            if i in [self.stop_token, self.pad_token]:
-                break
-            elif i in [self.start_token]:
-                continue
-            new_ids.append(i)
+        # Add a batch dimension if needed
+        if len(ids.shape) == 1:
+            ids = ids.unsqueeze(0)
+        return self.tokenizer.batch_decode(ids, skip_special_tokens=True)
 
-        return self.sp_base.decode(new_ids)
 
-    def decode_batch(self, id_tensor):
-        decoded = []
-        for i in range(id_tensor.shape[0]):
-            decoded.append(self.decode_ids(id_tensor[i, :]))
-        return decoded
+class WikiTextDataset(DatasetWrapper):
+    dataset_name = "wikitext"
+    data_config = "wikitext-103-v1"
+    data_key = "text"
+    max_token_ratio = .33
+    run_combine_func = True
 
-    def pad_sequences(self, seqs, length, use_stop=False):
-        return [self.pad_sequence(s, length, use_stop) for s in seqs]
-
-    def pad_sequence(self, seq, length, use_stop):
-        if use_stop:
-            seq = seq + [self.stop_token]
-        if len(seq) < length:
-            seq = seq + [self.pad_token] * (length - len(seq))
-        return seq
-
-    def generate_dataset(self, data, batch_size):
-        dataset = TextDataset(data["x"], data["target"], self)
-        loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-        return loader
-
-    def generate_datasets(self, batch_size):
-        datasets = {}
-        for split in self.final_data:
-            loader = self.generate_dataset(self.final_data[split], batch_size)
-            datasets[split] = loader
-
-        return datasets
-
-class TextDataset(Dataset):
-    def __init__(self, x, target, wrapper):
-        self.x = x
-        self.target = target
-        self.start_token = wrapper.start_token
-        self.pad_token = wrapper.pad_token
-        self.vocab_size = wrapper.vocab_size
-
-    def encode(self, tokens):
-        mat = torch.nn.functional.one_hot(tokens, self.vocab_size)
-        return mat
-
-    def __len__(self):
-        return len(self.x)
-
-    def __getitem__(self, idx):
-        x = torch.tensor(self.x[idx]).int()
-        y_list = [self.start_token] + self.target[idx]
-        comb_y = torch.tensor(y_list)
-        y = comb_y[1:]
-        prev_y = comb_y[:-1]
-        return x, y, prev_y
-
-class OpusDatasetWrapper(TextDatasetWrapper):
-    name = "opus_books"
-    version = "en-es"
-    splits = ["train"]
-    subset = "translation"
-
-    def split_x_target(self, split):
-        x = [s["es"] for s in split]
-        target = [s["en"] for s in split]
-        return x, target
-
-    def trim_length(self, x, target):
-        new_x = []
-        new_target = []
-        for xi, ti in zip(x, target):
-            if len(xi) < self.x_length and len(ti) < self.target_length:
-                new_x.append(xi)
-                new_target.append(ti)
-        return new_x, new_target
-
-    def create_final_sets(self):
-        x = self.encoded_data["train"]["x"]
-        target = self.encoded_data["train"]["target"]
-
-        valid_len = int(len(x) * 0.1)
-
-        train_x = x[:-valid_len]
-        valid_x = x[-valid_len:]
-        train_target = target[:-valid_len]
-        valid_target = target[-valid_len:]
-
-        self.final_data = {"train": {"x": train_x, "target": train_target}, "validation": {"x": valid_x, "target": valid_target}}
-
-class Opus100DatasetWrapper(OpusDatasetWrapper):
-    name = "opus100"
-
-class CNNDatasetWrapper(TextDatasetWrapper):
-    name = "cnn_dailymail"
-    version = "3.0.0"
-    splits = ["train", "test", "validation"]
-    subset = "highlights"
-    x_length = 15
-    target_length = 15
-
-    def split_x_target(self, split):
-        chunks = [s.split(" ") for s in split]
-        chunks = [c for c in chunks if len(c) > self.x_length + self.target_length]
-        x = [" ".join(c[:self.x_length]) for c in chunks]
-        target = [" ".join(c[self.x_length:(self.x_length + self.target_length)]) for c in chunks]
-        return x, target
-
-    def trim_length(self, x, target):
-        new_x = []
-        new_target = []
-        for xv, tr in zip(x, target):
-            if len(xv) < self.x_length:
-                continue
-
-            xn = xv[:self.x_length]
-            new_x.append(xn)
-            xr = xv[self.x_length:]
-
-            if len(xr) >= self.target_length:
-                new_target.append(xr[:self.target_length])
-            elif self.target_length > len(xr) > 0:
-                new_target.append(xr + tr[:(self.target_length - len(xr))])
+    def combine_func(self, examples):
+        entries = []
+        entry = ""
+        for sentence in examples[self.data_key]:
+            if re.match("^ \= \w", sentence):
+                if entry:
+                    entries.append(entry)
+                entry = ""
             else:
-                new_target.append(tr[:self.target_length])
-        return new_x, new_target
+                entry += sentence
+        entries.append(entry)
+        return {self.data_key: entries}
 
+class OpusBooksDataset(DatasetWrapper):
+    dataset_name = "opus_books"
+    data_config = "en-es"
+    en_key = "en"
+    es_key = "es"
+    data_key = "translation"
+    max_token_ratio = .33
+    run_combine_func = True
+    run_split_func = True
+    run_chunking = False
+    max_length = 50
+    min_length = 10
 
-class CNNDatasetDecoderOnly(CNNDatasetWrapper):
-    x_length = 15
-    target_length = 15
+    def combine_func(self, examples):
+        entries = []
+        for sentence in examples[self.data_key]:
+            en = sentence[self.en_key]
+            es = sentence[self.es_key]
+            comb = f"{en}<s>{es}"
+            entries.append(comb)
+        return {self.data_key: entries}
 
-    def split_x_target(self, split):
-        chunks = [s.split(" ") for s in split]
-        chunks = [c for c in chunks if len(c) > self.x_length + self.target_length]
-        x = [" ".join(c[:self.x_length]) for c in chunks]
-        target = [" ".join(c[self.x_length:(self.x_length + self.target_length)]) for c in chunks]
-        return x, target
-
-    def train_tokenizer_with_data(self):
-        tokenizer_data = ""
-        for split in self.splits:
-            tokenizer_data += "\n".join(self.split_data[split]["x"])
-        self.train_tokenizer(tokenizer_data)
-
-    def trim_length(self, x, target):
-        new_x = []
-        new_target = []
-        for xv, tr in zip(x, target):
-            if len(xv) < self.x_length or len(tr) < self.target_length:
-                continue
-
-            # Ensure that we get a full sequence for the decoder, with a start token between
-            # start and end
-            seq_start = xv[:self.x_length]
-            seq_end = (xv[self.x_length:] + tr)[:self.target_length]
-            tn = seq_start + seq_end
-            xn = seq_start + [0] + seq_end
-            new_x.append(xn)
-            new_target.append(tn)
-        return new_x, new_target
+    def split_func(self, examples):
+        en_ids = []
+        es_ids = []
+        en_lens = []
+        for ids, tokens in zip(examples[self.ids_key], examples[self.tokens_key]):
+            split_ind = tokens.index("<s>")
+            en_id = ids[:split_ind]
+            es_id = ids[split_ind+1:]
+            # Filter out sequences that are too long or too short
+            if self.min_length <= len(en_id) <= self.max_length and self.min_length <= len(es_id) <= self.max_length:
+                en_lens.append(len(en_id))
+                en_ids.append(en_id)
+                es_ids.append(es_id)
+        return {"en_ids": en_ids, "es_ids": es_ids, "en_lens": en_lens}
