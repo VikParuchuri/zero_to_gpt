@@ -2,19 +2,21 @@ import graphviz
 from copy import deepcopy
 from IPython.display import Latex
 import numpy as np
+import math
+import copy
 
-def reshape_grad(orig, grad):
-    if grad.shape != orig.shape:
-        try:
-            summed = np.sum(grad, axis=-1)
-            if summed.shape != orig.shape:
-                summed = summed.reshape(orig.shape)
-        except ValueError:
-            summed = np.sum(grad, axis=0)
-        if summed.shape != orig.shape:
-            summed = summed.reshape(orig.shape)
-        return summed
-    return grad
+def reshape_grad(grad, shape):
+    if math.prod(grad.shape) == math.prod(shape):
+        new_grad = grad.reshape(shape)
+    elif math.prod(shape) == 1:
+        new_grad = np.sum(grad).reshape(1,1)
+    elif grad.shape[0] == shape[0]:
+        new_grad = np.sum(grad, axis=-1).reshape(-1, 1)
+    elif grad.shape[1] == shape[1]:
+        new_grad = np.sum(grad, axis=0).reshape(1, -1)
+    else:
+        raise ValueError("Cannot reshape gradient.")
+    return new_grad
 
 class Node():
     def __init__(self, *args, out=None, desc=None):
@@ -28,6 +30,8 @@ class Node():
         self.desc = desc
         self.out = out
         self.needs_grad = False
+        self.parent_nodes = []
+        self.grad_cache = None
         if self.desc and not self.out:
             self.out = self.desc
 
@@ -63,6 +67,7 @@ class Node():
         if self.needs_grad:
             self.grad = None
             self.derivative = []
+        self.grad_cache = {}
         if self.nodes is None:
             return
         for node in self.nodes:
@@ -73,19 +78,44 @@ class Node():
             return self.forward()
         args = []
         for node in self.nodes:
+            if self not in node.parent_nodes:
+                node.parent_nodes.append(self)
             args.append(node.apply_fwd())
         self.cache = args
         return self.forward(*args)
 
-    def apply_bwd(self, grad):
-        grads = self.backward(grad)
-        if not isinstance(grads, tuple):
-            grads = (grads,)
+    def apply_bwd(self, grad=None):
+        if len(self.parent_nodes) == 0:
+            new_grad = self.backward(grad)
+        else:
+            in_grad = 0
+            for node in self.parent_nodes:
+                self_id = id(self)
+                if self_id not in node.grad_cache:
+                    # This means not all parents have finished computing yet
+                    return
+                in_grad += node.grad_cache[self_id]
+            new_grad = self.backward(in_grad)
+        if not isinstance(new_grad, tuple):
+            new_grad = (new_grad,)
+        # End chain if we hit a leaf node
         if self.nodes is None:
             return None
-        args = []
-        for node, grad in zip(self.nodes, grads):
-            args.append(node.apply_bwd(grad))
+
+        # Reshape gradients if necessary
+        reshaped_grads = []
+        for g, arg in zip(new_grad, self.cache):
+            has_shape = hasattr(g, "shape") and hasattr(arg, "shape")
+            if has_shape and g.shape != arg.shape:
+                g = reshape_grad(g, arg.shape)
+            reshaped_grads.append(g)
+        # Set grad cache for child nodes
+        for node, grad in zip(self.nodes, reshaped_grads):
+            node_id = id(node)
+            self.grad_cache[node_id] = grad
+        # Call child nodes properly
+        for node in self.nodes:
+            node.apply_bwd()
 
     def generate_graph(self, backward=False):
         graph = graphviz.Digraph('fwd_pass', format="png", strict=True)
@@ -134,7 +164,7 @@ class Parameter(Node):
     def backward(self, grad):
         if not self.needs_grad:
             return
-        grad = reshape_grad(self.data, grad)
+        grad = reshape_grad(grad, self.data.shape)
         if self.grad is None:
             self.grad = np.zeros_like(self.data)
         self.grad += grad
