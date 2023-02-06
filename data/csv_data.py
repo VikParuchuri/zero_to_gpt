@@ -134,12 +134,6 @@ class SkyServerDatasetWrapper(CSVDatasetWrapper):
         self.data = data
 
 class SkyServerBinaryDatasetWrapper(SkyServerDatasetWrapper):
-    predictors = ["ra", "dec", "u", "g", "r", "i", "z", "run", "camcol", "field", "redshift", "plate", "mjd"]
-    target = "class"
-    file_name = "skyserver.csv"
-    splits = ["train", "validation", "test"]
-    download_link = "https://drive.google.com/file/d/1gYwg5YyaV3zUX-07bLCol8E0M-uX__zX/view?usp=share_link"
-
     def clean_data(self):
         self.scaler = StandardScaler()
         data = self.data.ffill()
