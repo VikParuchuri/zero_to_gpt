@@ -9,11 +9,17 @@ def reshape_grad(grad, shape):
     if math.prod(grad.shape) == math.prod(shape):
         new_grad = grad.reshape(shape)
     elif math.prod(shape) == 1:
-        new_grad = np.sum(grad).reshape(1,1)
+        new_grad = np.sum(grad).reshape(1, 1)
     elif grad.shape[0] == shape[0]:
-        new_grad = np.sum(grad, axis=-1).reshape(-1, 1)
+        if grad.shape[1] > shape[1]:
+            new_grad = np.sum(grad, axis=-1).reshape(-1, 1)
+        else:
+            raise ValueError(f"Cannot increase dimensions from {grad.shape} to {shape}")
     elif grad.shape[1] == shape[1]:
-        new_grad = np.sum(grad, axis=0).reshape(1, -1)
+        if grad.shape[0] > shape[0]:
+            new_grad = np.sum(grad, axis=0).reshape(1, -1)
+        else:
+            raise ValueError(f"Cannot increase dimensions from {grad.shape} to {shape}")
     else:
         raise ValueError("Cannot reshape gradient.")
     return new_grad
@@ -138,7 +144,7 @@ class Node():
 
     def display_partial_derivative(self):
         flat_eqs = ["*".join(item) for item in self.derivative]
-        lhs = f"\\frac{{\partial L}}{{\partial {self.out}}}"
+        lhs = f"\\frac{{\partial}}{{\partial {self.out}}}"
         rhs = " + \\\\".join(flat_eqs)
         return f"{lhs} = {rhs}"
 
