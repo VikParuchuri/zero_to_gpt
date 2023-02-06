@@ -45,10 +45,9 @@ Recurrent neural networks are optimized to process sequences of data.  They're u
 
 ## 5. Backpropagation in depth
 
-So far, we've taken a somewhat loose look at backpropagation to let us focus on understanding neural network architecture.  We'll build a computational graph, and use it to take a deeper look at how backpropagation works.
+So far, we've taken a loose look at backpropagation to let us focus on understanding neural network architecture.  We'll build a miniature version of PyTorch, and use it to understand backpropagation better.
 
-- Lesson: Read the in-depth backpropagation tutorial (coming soon)
-- Implementation: [Notebook](notebooks/comp_graph/comp_graph.ipynb)
+- Lesson: Read the [in-depth backpropagation tutorial](explanations/comp_graph.ipynb)
 
 ## 6. PyTorch
 
