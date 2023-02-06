@@ -40,7 +40,7 @@ Classification is how we get neural networks to categorize data for us.  Classif
 
 Recurrent neural networks are optimized to process sequences of data.  They're used for tasks like translation and text classification.
 
-- Lesson: Read the [recurrent network tutorial](explanations/rnn.ipynb)
+- Lesson: Read the [recurrent network tutorial](explanations/rnn.ipynb) and watch the optional [video](https://youtu.be/4wuIOcD1LLI)
 - Implementation: [Notebook](notebooks/rnn/rnn.ipynb)
 
 ## 5. Backpropagation in depth
