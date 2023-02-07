@@ -52,6 +52,7 @@ class Node():
         if self.desc:
             self_name = self.desc
         graph.node(self_id, self_name)
+        # Check for leaf node
         if self.nodes is None:
             return
         for node in self.nodes:
@@ -80,58 +81,69 @@ class Node():
             node.zero_grad()
 
     def apply_fwd(self):
+        # Leaf nodes just return
         if self.nodes is None:
             return self.forward()
         args = []
+        # Loop through child nodes and call apply
         for node in self.nodes:
             if self not in node.parent_nodes:
                 node.parent_nodes.append(self)
             args.append(node.apply_fwd())
+        # Cache inputs for backprop
         self.cache = args
         return self.forward(*args)
 
     def apply_bwd(self, grad=None):
+        # If it is a terminal node, then get gradient from input
         if len(self.parent_nodes) == 0:
             new_grad = self.backward(grad)
         else:
             in_grad = 0
+            # Loop across parent nodes (which pass gradient down)
             for node in self.parent_nodes:
                 self_id = id(self)
                 if self_id not in node.grad_cache:
                     # This means not all parents have finished computing yet
                     return
+                # Sum gradient coming from parent nodes
                 in_grad += node.grad_cache[self_id]
+            # Pass gradient across this node
             new_grad = self.backward(in_grad)
         if not isinstance(new_grad, tuple):
             new_grad = (new_grad,)
         # End chain if we hit a leaf node
+        # Leaf nodes will set the self.grad property in backward
         if self.nodes is None:
             return None
 
         # Reshape gradients if necessary
         reshaped_grads = []
         for g, arg in zip(new_grad, self.cache):
+            # Some parameters are single numbers
             has_shape = hasattr(g, "shape") and hasattr(arg, "shape")
             if has_shape and g.shape != arg.shape:
                 g = reshape_grad(g, arg.shape)
             reshaped_grads.append(g)
-        # Set grad cache for child nodes
+        # Set grad cache for child nodes to get later
         for node, grad in zip(self.nodes, reshaped_grads):
             node_id = id(node)
             self.grad_cache[node_id] = grad
-        # Call child nodes properly
+        # Call child nodes to calculate their gradients
         for node in self.nodes:
             node.apply_bwd()
 
     def generate_graph(self, backward=False):
         graph = graphviz.Digraph('fwd_pass', format="png", strict=True)
         graph.attr(rankdir='LR')
+        # this recurses through nodes
         self.visualize(graph, backward=backward)
         return graph
 
     def generate_derivative_chains(self, chain=None):
         if chain is None:
             chain = []
+        # Only set derivatives on leaf nodes
         if self.nodes is None:
             if self.needs_grad:
                 self.derivative.append(chain)

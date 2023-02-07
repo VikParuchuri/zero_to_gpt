@@ -1,120 +1,122 @@
 # Zero to GPT
 
-This course will get you from no knowledge of deep learning to training a GPT model.  As AI moves out of the research lab, the world needs more people who can understand and apply it.  If you want to be one of them, this course is for you.
+This course will take you from no knowledge of deep learning to training your own GPT model.  As AI moves out of the research lab, the world needs more people who can understand and apply it.  If you want to be one of them, this course is for you.
 
 We’ll start with the fundamentals - the basics of neural networks, how they work, and how to tune them.  You need some math to understand deep learning, but we won’t get bogged down in it.  
 
 This course focuses on understanding concepts over theory.  We’ll solve real problems, like predicting the weather and translating languages.  Over time, we'll move to more complex topics, like transformers, GPU programming, and distributed training.
 
-To use this course, go through each chapter sequentially.  Read the lessons or watch the optional videos.  Look through the implementations to solidify your understanding, and try to recreate them on your own.
+To use this course, go through each chapter sequentially.  Read the lessons or watch the optional videos - they have the same information.  Look through the implementations to solidify your understanding, and try to recreate them on your own.
 
-# Course Outline
+## Course Outline
 
-## 0. Introduction
+**0. Introduction**
 
 An overview of the course and topics we'll cover.  Includes some math and NumPy fundamentals you'll need for deep learning.
 
-- Lesson: Read the [intro](explanations/intro.ipynb)
+- [Course intro](explanations/intro.ipynb)
+- Video coming soon
 
-## 1. Gradient descent
+**1. Gradient descent**
 
 Gradient descent is how neural networks train their parameters to match the data.  It's the "learning" part of deep learning.
 
-- Lesson: Read the [gradient descent tutorial](explanations/linreg.ipynb) and watch the optional [video](https://youtu.be/-cs5D91eBLE)
+- [Lesson](explanations/linreg.ipynb) 
+- [Video](https://youtu.be/-cs5D91eBLE) (optional)
 - Implementation: [Notebook](notebooks/linreg/linreg.ipynb) and [class](nnets/dense.py)
 
-## 2. Dense networks
+**2. Dense networks**
 
 Dense networks are the basic form of a neural network, where every input is connected to an output.  These can also be called fully connected networks.
 
-- Lesson: Read the [dense network tutorial](explanations/dense.ipynb) and watch the optional [video](https://youtu.be/MQzG1hfhow4)
+- [Lesson](explanations/dense.ipynb)
+- [Video](https://youtu.be/MQzG1hfhow4) (optional)
 - Implementation: [Notebook](notebooks/dense/dense.ipynb) and [class](nnets/dense.py)
 
-## 3. Classification with neural networks
+**3. Classification with neural networks**
 
 Classification is how we get neural networks to categorize data for us.  Classification is used by language models like GPT to predict the next word in a sequence.
 
-- Lesson: Read the [classification tutorial](explanations/classification.ipynb)
+- [Lesson](explanations/classification.ipynb)
+- Video coming soon
 
-## 4. Recurrent networks
+**4. Recurrent networks**
 
 Recurrent neural networks are optimized to process sequences of data.  They're used for tasks like translation and text classification.
 
-- Lesson: Read the [recurrent network tutorial](explanations/rnn.ipynb) and watch the optional [video](https://youtu.be/4wuIOcD1LLI)
-- Implementation: [Notebook](notebooks/rnn/rnn.ipynb)
+- [Lesson](explanations/rnn.ipynb)
+- [Video](https://youtu.be/4wuIOcD1LLI) (optional)
+- [Implementation](notebooks/rnn/rnn.ipynb)
 
-## 5. Backpropagation in depth
+**5. Backpropagation in depth**
 
 So far, we've taken a loose look at backpropagation to let us focus on understanding neural network architecture.  We'll build a miniature version of PyTorch, and use it to understand backpropagation better.
 
-- Lesson: Read the [in-depth backpropagation tutorial](explanations/comp_graph.ipynb)
+- [Lesson](explanations/comp_graph.ipynb)
 
-## 6. PyTorch
+**6. PyTorch**
 
 PyTorch is a framework for deep learning that automatically differentiates functions.  It's widely used to create cutting-edge models.
 
-- Lesson: Read the PyTorch tutorial (coming soon)
+- Lesson coming soon
 
-## 7. Regularization
+**7. Regularization**
 
 Regularization prevents overfitting to the training set.  This means that the network can generalize well to new data.
 
-- Lesson: Read the regularization tutorial (coming soon)
+- Lesson coming soon
 
-## 8. Data
+**8. Data**
 
 If you want to train a deep learning model, you need data.  Gigabytes of it.  We'll discuss how you can get this data and process it.
 
-- Lesson: Read the data tutorial (coming soon)
-- Implementation: Notebook coming soon
+- Lesson coming soon
 
-## 9.  Encoders and decoders
+**9.  Encoders and decoders**
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
-- Lesson: Read the encoder/decoder tutorial (coming soon)
-- Implementation: [Notebook](notebooks/rnnencoder/encoder.ipynb)
+- Lesson coming soon
+- [Implementation](notebooks/rnnencoder/encoder.ipynb)
 
-## 10. Transformers
+**10. Transformers**
 
 Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
 
-- Lesson: Read the transformer tutorial (coming soon)
-- Implementation: [Notebook](notebooks/transformer/transformer.ipynb)
+- Lesson coming soon
+- [Implementation](notebooks/transformer/transformer.ipynb)
 
-## 11. GPU programming with triton
+**11. GPU programming with Triton**
 
 To train a large neural network, we'll need to use GPUs.  PyTorch can automatically use GPUs, but not all operators are fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
 
-- Lesson: Read the GPU programming tutorial (coming soon)
-- Implementation: Notebook coming soon
+- Lesson coming soon
+- Implementation coming soon
 
-## 12. Efficient transformers
+**12. Efficient transformers**
 
 GPT models take a long time to train.  We can reduce that time by using more GPUs, but we don't all have access to GPU clusters.  To reduce training time, we'll incorporate some recent advances to make the transformer model more efficient.
 
-- Lesson: Read the efficient transformer tutorial (coming soon)
-- Implementation: [Notebook](notebooks/eff_transformer/eff_transformer.ipynb)
+- Lesson coming soon
+- [Implementation](notebooks/eff_transformer/eff_transformer.ipynb)
 
-## More Chapters Coming Soon
+### More Chapters Coming Soon
 
-# Optional Chapters
+## Optional Chapters
 
-## Convolutional networks
+**Convolutional networks**
 
 Convolutional neural networks are used for working with images and time series.
 
-- Lesson: Read the convolutional network tutorial (coming soon)
 - Implementation: [Notebook](notebooks/cnn/cnn.ipynb) and [class](nnets/conv.py)
 
-## Gated recurrent networks
+**Gated recurrent networks**
 
 Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
 
-- Lesson: Read the GRU tutorial (coming soon)
-- Implementation: [Notebook](notebooks/gru/gru.ipynb)
+- [Implementation](notebooks/gru/gru.ipynb)
 
-# Installation
+## Installation
 
 If you want to run these notebooks locally, you'll need to install some Python packages.
 
@@ -122,7 +124,7 @@ If you want to run these notebooks locally, you'll need to install some Python p
 - Clone this repository.
 - Run `pip install -r requirements.txt`
 
-# License
+## License
 
 You can use and adapt this material for your own courses, but not commercially.  You must provide attribution to `Vik Paruchuri, Dataquest` if you use this material.
 
