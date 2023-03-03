@@ -12,12 +12,19 @@ To use this course, go through each chapter sequentially.  Read the lessons or w
 
 **0. Introduction**
 
-An overview of the course and topics we'll cover.  Includes some math and NumPy fundamentals you'll need for deep learning.
+An overview of the course and topics we'll cover.
 
 - [Course intro](explanations/intro.ipynb)
 - Video coming soon
 
-**1. Gradient descent**
+**1. Math fundamentals**
+
+This is an optional lesson with a basic refresher on linear algebra and calculus for deep learning.  We'll use NumPy to apply the concepts.  If you're already familiar with these topics, you can skip this lesson.
+
+- [Lesson](explanations/linalg.ipynb)
+- Video coming soon
+
+**2. Gradient descent**
 
 Gradient descent is how neural networks train their parameters to match the data.  It's the "learning" part of deep learning.
 
@@ -25,7 +32,7 @@ Gradient descent is how neural networks train their parameters to match the data
 - [Video](https://youtu.be/-cs5D91eBLE) (optional)
 - Implementation: [Notebook](notebooks/linreg/linreg.ipynb) and [class](nnets/dense.py)
 
-**2. Dense networks**
+**3. Dense networks**
 
 Dense networks are the basic form of a neural network, where every input is connected to an output.  These can also be called fully connected networks.
 
@@ -33,14 +40,14 @@ Dense networks are the basic form of a neural network, where every input is conn
 - [Video](https://youtu.be/MQzG1hfhow4) (optional)
 - Implementation: [Notebook](notebooks/dense/dense.ipynb) and [class](nnets/dense.py)
 
-**3. Classification with neural networks**
+**4. Classification with neural networks**
 
 Classification is how we get neural networks to categorize data for us.  Classification is used by language models like GPT to predict the next word in a sequence.
 
 - [Lesson](explanations/classification.ipynb)
-- Video coming soon
+- [Video](https://youtu.be/71GtdWmznok) (optional)
 
-**4. Recurrent networks**
+**5. Recurrent networks**
 
 Recurrent neural networks are optimized to process sequences of data.  They're used for tasks like translation and text classification.
 
@@ -48,52 +55,53 @@ Recurrent neural networks are optimized to process sequences of data.  They're u
 - [Video](https://youtu.be/4wuIOcD1LLI) (optional)
 - [Implementation](notebooks/rnn/rnn.ipynb)
 
-**5. Backpropagation in depth**
+**6. Backpropagation in depth**
 
 So far, we've taken a loose look at backpropagation to let us focus on understanding neural network architecture.  We'll build a miniature version of PyTorch, and use it to understand backpropagation better.
 
 - [Lesson](explanations/comp_graph.ipynb)
+- Video coming soon
 
-**6. PyTorch**
+**7. PyTorch**
 
 PyTorch is a framework for deep learning that automatically differentiates functions.  It's widely used to create cutting-edge models.
 
 - Lesson coming soon
 
-**7. Regularization**
+**8. Regularization**
 
 Regularization prevents overfitting to the training set.  This means that the network can generalize well to new data.
 
 - Lesson coming soon
 
-**8. Data**
+**9. Data**
 
 If you want to train a deep learning model, you need data.  Gigabytes of it.  We'll discuss how you can get this data and process it.
 
 - Lesson coming soon
 
-**9.  Encoders and decoders**
+**10.  Encoders and decoders**
 
 Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
 
 - Lesson coming soon
 - [Implementation](notebooks/rnnencoder/encoder.ipynb)
 
-**10. Transformers**
+**11. Transformers**
 
 Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
 
 - Lesson coming soon
 - [Implementation](notebooks/transformer/transformer.ipynb)
 
-**11. GPU programming with Triton**
+**12. GPU programming with Triton**
 
 To train a large neural network, we'll need to use GPUs.  PyTorch can automatically use GPUs, but not all operators are fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
 
 - Lesson coming soon
 - Implementation coming soon
 
-**12. Efficient transformers**
+**13. Efficient transformers**
 
 GPT models take a long time to train.  We can reduce that time by using more GPUs, but we don't all have access to GPU clusters.  To reduce training time, we'll incorporate some recent advances to make the transformer model more efficient.
 
