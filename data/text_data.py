@@ -146,6 +146,7 @@ class WikiTextDataset(DatasetWrapper):
     data_key = "text"
     max_token_ratio = .33
     run_combine_func = True
+    run_split_func = True
 
     def combine_func(self, examples):
         entries = []
@@ -159,6 +160,16 @@ class WikiTextDataset(DatasetWrapper):
                 entry += sentence
         entries.append(entry)
         return {self.data_key: entries}
+
+    def split_func(self, examples):
+        all_ids = []
+        all_tokens = []
+        for ids, tokens in zip(examples[self.ids_key], examples[self.tokens_key]):
+            # Filter out sequences that are too long or too short
+            if len(ids) == self.model_max_length:
+                all_ids.append(ids)
+                all_tokens.append(tokens)
+        return {self.ids_key: all_ids, self.tokens_key: all_tokens}
 
 class OpusBooksDataset(DatasetWrapper):
     dataset_name = "opus_books"

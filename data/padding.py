@@ -1,7 +1,7 @@
-from torch.utils.data import BatchSampler, default_collate
+from torch.utils.data import Sampler, default_collate
 import torch
 
-class PaddingSampler(BatchSampler):
+class PaddingSampler(Sampler):
     def __init__(self, lengths):
         indices = torch.arange(len(lengths))
         self.length_idx = torch.vstack((indices, lengths)).T
@@ -11,8 +11,8 @@ class PaddingSampler(BatchSampler):
         self.length_idx = self.length_idx[torch.randperm(len(self.length_idx))]
         # Resort, this will get a random order within each length group
         self.length_idx = self.length_idx[self.length_idx[:, 1].argsort()]
-        for i in self.length_idx[:, 0]:
-            yield i.item()
+        inds = self.length_idx[:, 0].tolist()
+        yield from iter(inds)
 
     def __len__(self) -> int:
         return len(self.length_idx)
