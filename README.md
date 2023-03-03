@@ -17,7 +17,7 @@ An overview of the course and topics we'll cover.
 - [Course intro](explanations/intro.ipynb)
 - Video coming soon
 
-**1. Math fundamentals**
+**1. Math and NumPy fundamentals**
 
 This is an optional lesson with a basic refresher on linear algebra and calculus for deep learning.  We'll use NumPy to apply the concepts.  If you're already familiar with these topics, you can skip this lesson.
 
