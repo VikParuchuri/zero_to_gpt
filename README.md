@@ -62,30 +62,30 @@ So far, we've taken a loose look at backpropagation to let us focus on understan
 - [Lesson](explanations/comp_graph.ipynb)
 - Video coming soon
 
-**7. PyTorch**
+**7. Optimizers**
+
+We've used SGD to update model parameters so far.  We'll learn about other optimizers that have better convergence properties.
+
+- Lesson coming soon
+- Video coming soon
+
+**8. PyTorch**
 
 PyTorch is a framework for deep learning that automatically differentiates functions.  It's widely used to create cutting-edge models.
 
 - Lesson coming soon
 
-**8. Regularization**
+**9. Regularization**
 
 Regularization prevents overfitting to the training set.  This means that the network can generalize well to new data.
 
 - Lesson coming soon
 
-**9. Data**
+**10. Data**
 
 If you want to train a deep learning model, you need data.  Gigabytes of it.  We'll discuss how you can get this data and process it.
 
 - Lesson coming soon
-
-**10.  Encoders and decoders**
-
-Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
-
-- Lesson coming soon
-- [Implementation](notebooks/rnnencoder/encoder.ipynb)
 
 **11. Transformers**
 
@@ -94,7 +94,7 @@ Transformers fix the problem of vanishing/exploding gradients in RNNs by using a
 - Lesson coming soon
 - [Implementation](notebooks/transformer/transformer.ipynb)
 
-**12. GPU programming with Triton**
+**12. GPU kernels**
 
 To train a large neural network, we'll need to use GPUs.  PyTorch can automatically use GPUs, but not all operators are fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
 
@@ -107,6 +107,13 @@ GPT models take a long time to train.  We can reduce that time by using more GPU
 
 - Lesson coming soon
 - [Implementation](notebooks/eff_transformer/eff_transformer.ipynb)
+
+**14. Training**
+
+It's time to pull everything together and train the model!
+
+- Lesson coming soon
+- Implementation coming soon
 
 ### More Chapters Coming Soon
 
@@ -123,6 +130,12 @@ Convolutional neural networks are used for working with images and time series.
 Gated recurrent networks help RNNs process long sequences by helping networks forget irrelevant information.  LSTM and GRU are two popular types of gated networks.
 
 - [Implementation](notebooks/gru/gru.ipynb)
+
+**Encoders and decoders**
+
+Encoder/decoders are used for NLP tasks when the output isn't the same length as the input.  For example, if you want to use questions/answers as training data, the answers may be a different length than the question.
+
+- [Implementation](notebooks/rnnencoder/encoder.ipynb)
 
 ## Installation
 
