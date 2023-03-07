@@ -66,7 +66,7 @@ So far, we've taken a loose look at backpropagation to let us focus on understan
 
 We've used SGD to update model parameters so far.  We'll learn about other optimizers that have better convergence properties.
 
-- Lesson coming soon
+- [Lesson](explanations/optimizers.ipynb)
 - Video coming soon
 
 **8. PyTorch**
