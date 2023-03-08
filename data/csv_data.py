@@ -94,7 +94,22 @@ class CSVDatasetWrapper:
             datasets.append((split["x"], split["target"]))
         return datasets
 
+
 class WeatherDatasetWrapper(CSVDatasetWrapper):
+    predictors = ["tmax", "tmin", "rain"]
+    target = "tmax_tomorrow"
+    file_name = "clean_weather.csv"
+    splits = ["train", "validation", "test"]
+    download_link = "https://drive.google.com/uc?export=download&id=1O_uOTvMJb2FkUK7rB6lMqpPQqiAdLXNL"
+    sequence_length = 7
+
+    def clean_data(self):
+        self.scaler = StandardScaler()
+        data = self.data.ffill()
+        data[self.predictors] = self.scaler.fit_transform(data[self.predictors])
+        self.data = data
+
+class WeatherDatasetWrapperRNN(CSVDatasetWrapper):
     predictors = ["tmax", "tmin", "rain"]
     target = "tmax_tomorrow"
     file_name = "clean_weather.csv"
