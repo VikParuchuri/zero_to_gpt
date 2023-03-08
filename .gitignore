@@ -9,6 +9,7 @@ tokens.txt
 *.model
 wandb
 *_tokenizer/
+scratch.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
