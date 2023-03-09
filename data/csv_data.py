@@ -94,6 +94,19 @@ class CSVDatasetWrapper:
             datasets.append((split["x"], split["target"]))
         return datasets
 
+class HousePricesDatasetWrapper(CSVDatasetWrapper):
+    predictors = ["interest", "vacancy", "cpi", "price", "value", "adj_price", "adj_value"]
+    target = "next_quarter"
+    file_name = "house_prices.csv"
+    splits = ["train", "validation", "test"]
+    download_link = "https://drive.google.com/uc?export=download&id=1eWeeYlxNatpXQSsiFwQg2HJeYCTJNj9Z"
+
+    def clean_data(self):
+        self.scaler = StandardScaler()
+        data = self.data.ffill()
+        data[self.predictors] = self.scaler.fit_transform(self.data[self.predictors])
+        data[self.target] = (data[self.target] - data[self.target].min()) // 1000
+        self.data = data
 
 class WeatherDatasetWrapper(CSVDatasetWrapper):
     predictors = ["tmax", "tmin", "rain"]
