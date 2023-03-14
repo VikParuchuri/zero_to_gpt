@@ -73,7 +73,8 @@ We've used SGD to update model parameters so far.  We'll learn about other optim
 
 PyTorch is a framework for deep learning that automatically differentiates functions.  It's widely used to create cutting-edge models.
 
-- Lesson coming soon
+- [Lesson](explanations/pytorch.ipynb)
+- Video coming soon
 
 **9. Regularization**
 
