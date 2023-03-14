@@ -2,11 +2,13 @@
 
 This course will take you from no knowledge of deep learning to training your own GPT model.  As AI moves out of the research lab, the world needs more people who can understand and apply it.  If you want to be one of them, this course is for you.
 
-We’ll start with the fundamentals - the basics of neural networks, how they work, and how to tune them.  You need some math to understand deep learning, but we won’t get bogged down in it.  
+This course balances theory and application.  We’ll solve real problems, like predicting the weather and translating languages.  As we do so, we'll extensively cover theoretical building blocks like gradient descent and backpropagation.  This will prepare you to successfully train and use models in the real world.
 
-This course focuses on understanding concepts over theory.  We’ll solve real problems, like predicting the weather and translating languages.  Over time, we'll move to more complex topics, like transformers, GPU programming, and distributed training.
+We’ll start with the fundamentals - neural network architectures and training methods. Later in the course, we'll move to complex topics like transformers, GPU programming, and distributed training.
 
-To use this course, go through each chapter sequentially.  Read the lessons or watch the optional videos - they have the same information.  Look through the implementations to solidify your understanding, and try to recreate them on your own.
+You'll need to understand Python to take this course, including for loops, functions, and classes.  The first part of [this Dataquest path](https://www.dataquest.io/path/data-scientist/) will teach you what you need.
+
+To use this course, go through each chapter sequentially.  Read the lessons or watch the optional videos - they have the same information.  Look through the implementations to solidify your understanding, and recreate them on your own.
 
 ## Course Outline
 
@@ -30,7 +32,7 @@ Gradient descent is how neural networks train their parameters to match the data
 
 - [Lesson](explanations/linreg.ipynb) 
 - [Video](https://youtu.be/-cs5D91eBLE) (optional)
-- Implementation: [Notebook](notebooks/linreg/linreg.ipynb) and [class](nnets/dense.py)
+- [Implementation](notebooks/linreg/linreg.ipynb)
 
 **3. Dense networks**
 
@@ -38,7 +40,7 @@ Dense networks are the basic form of a neural network, where every input is conn
 
 - [Lesson](explanations/dense.ipynb)
 - [Video](https://youtu.be/MQzG1hfhow4) (optional)
-- Implementation: [Notebook](notebooks/dense/dense.ipynb) and [class](nnets/dense.py)
+- [Implementation](notebooks/dense/dense.ipynb)
 
 **4. Classification with neural networks**
 
