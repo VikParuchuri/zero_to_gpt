@@ -21,3 +21,16 @@ class Optimizer():
         plt.scatter([x[-1]], [y[-1]], color='green')
         plt.plot(x, y)
         plt.show()
+
+class Scheduler():
+    def __init__(self):
+        pass
+
+    def __call__(self):
+        pass
+
+    def plot_lr(self):
+        x = np.linspace(0, self.total_steps, 500, dtype=int)
+        y = [self(i) for i in x]
+        plt.plot(x, y)
+        plt.show()
