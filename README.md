@@ -17,14 +17,14 @@ To use this course, go through each chapter sequentially.  Read the lessons or w
 An overview of the course and topics we'll cover.
 
 - [Course intro](explanations/intro.ipynb)
-- Video coming soon
+- [Video](https://youtu.be/C9FORlAlByo) (optional)
 
 **1. Math and NumPy fundamentals**
 
 This is an optional lesson with a basic refresher on linear algebra and calculus for deep learning.  We'll use NumPy to apply the concepts.  If you're already familiar with these topics, you can skip this lesson.
 
 - [Lesson](explanations/linalg.ipynb)
-- Video coming soon
+- [Video](https://youtu.be/5zbTnOd_53g) (optional)
 
 **2. Gradient descent**
 
@@ -62,7 +62,7 @@ Recurrent neural networks are optimized to process sequences of data.  They're u
 So far, we've taken a loose look at backpropagation to let us focus on understanding neural network architecture.  We'll build a miniature version of PyTorch, and use it to understand backpropagation better.
 
 - [Lesson](explanations/comp_graph.ipynb)
-- Video coming soon
+- [Video](https://youtu.be/RyKrG8rTGUY) (optional)
 
 **7. Optimizers**
 
