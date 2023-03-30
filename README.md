@@ -51,31 +51,31 @@ Classification is how we get neural networks to categorize data for us.  Classif
 
 **5. Recurrent networks**
 
-Recurrent neural networks are optimized to process sequences of data.  They're used for tasks like translation and text classification.
+Recurrent neural networks (RNNs) are optimized to process sequences of data.  They're used for tasks like translation and text classification.
 
 - [Lesson](explanations/rnn.ipynb)
 - [Video](https://youtu.be/4wuIOcD1LLI) (optional)
 - [Implementation](notebooks/rnn/rnn.ipynb)
 
-**6. Backpropagation in depth**
+**6. Transformers**
+
+Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
+
+- Lesson coming soon
+- [Implementation](notebooks/transformer/transformer.ipynb)
+
+**7. Backpropagation in depth**
 
 So far, we've taken a loose look at backpropagation to let us focus on understanding neural network architecture.  We'll build a miniature version of PyTorch, and use it to understand backpropagation better.
 
 - [Lesson](explanations/comp_graph.ipynb)
 - [Video](https://youtu.be/RyKrG8rTGUY) (optional)
 
-**7. Optimizers**
+**8. Optimizers**
 
 We've used SGD to update model parameters so far.  We'll learn about other optimizers that have better convergence properties.
 
 - [Lesson](explanations/optimizers.ipynb)
-- Video coming soon
-
-**8. PyTorch**
-
-PyTorch is a framework for deep learning that automatically differentiates functions.  It's widely used to create cutting-edge models.
-
-- [Lesson](explanations/pytorch.ipynb)
 - Video coming soon
 
 **9. Regularization**
@@ -83,37 +83,44 @@ PyTorch is a framework for deep learning that automatically differentiates funct
 Regularization prevents overfitting to the training set.  This means that the network can generalize well to new data.
 
 - Lesson coming soon
+- Video coming soon
 
-**10. Data**
+**10. PyTorch**
+
+PyTorch is a framework for deep learning that automatically differentiates functions.  It's widely used to create cutting-edge models.
+
+- [Lesson](explanations/pytorch.ipynb)
+- Video coming soon
+
+**11. Data**
 
 If you want to train a deep learning model, you need data.  Gigabytes of it.  We'll discuss how you can get this data and process it.
 
 - Lesson coming soon
 
-**11. Transformers**
+**12. GPT-2**
 
-Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
+We'll train a version of the popular GPT-2 model.
 
 - Lesson coming soon
-- [Implementation](notebooks/transformer/transformer.ipynb)
 
-**12. GPU kernels**
+**13. GPU kernels**
 
-To train a large neural network, we'll need to use GPUs.  PyTorch can automatically use GPUs, but not all operators are fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
+PyTorch can automatically use GPUs for training, but not all operators are fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
 
 - Lesson coming soon
 - Implementation coming soon
 
-**13. Efficient transformers**
+**14. Efficient transformers**
 
 GPT models take a long time to train.  We can reduce that time by using more GPUs, but we don't all have access to GPU clusters.  To reduce training time, we'll incorporate some recent advances to make the transformer model more efficient.
 
 - Lesson coming soon
 - [Implementation](notebooks/eff_transformer/eff_transformer.ipynb)
 
-**14. Training**
+**15. Training GPT-X**
 
-It's time to pull everything together and train the model!
+We'll train GPT-X, a version of a GPT model with some optimizations and improvements.
 
 - Lesson coming soon
 - Implementation coming soon
