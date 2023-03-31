@@ -10,6 +10,8 @@ tokens.txt
 wandb
 *_tokenizer/
 scratch.ipynb
+!opus_books.csv
+!clean_weather.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

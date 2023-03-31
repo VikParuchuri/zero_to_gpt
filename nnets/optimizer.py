@@ -34,3 +34,4 @@ class Scheduler():
         y = [self(i) for i in x]
         plt.plot(x, y)
         plt.show()
+
