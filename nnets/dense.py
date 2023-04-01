@@ -87,10 +87,11 @@ class DenseUpdate():
         # Update the weights given an update matrix
         self.weights += w_grad
         self.bias += b_grad
-def forward(x, layers):
+def forward(x, layers, training=True):
     # Loop through each layer
     for layer in layers:
         # Run the forward pass
+        layer.training = training
         x = layer.forward(x)
     return x
 
