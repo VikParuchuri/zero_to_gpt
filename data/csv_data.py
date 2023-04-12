@@ -152,7 +152,7 @@ class SkyServerDatasetWrapper(CSVDatasetWrapper):
     target = "class"
     file_name = "skyserver.csv"
     splits = ["train", "validation", "test"]
-    download_link = "https://drive.google.com/file/d/1gYwg5YyaV3zUX-07bLCol8E0M-uX__zX/view?usp=share_link"
+    download_link = "https://drive.google.com/u/0/uc?id=1gYwg5YyaV3zUX-07bLCol8E0M-uX__zX&export=download"
 
     def clean_data(self):
         self.scaler = StandardScaler()
