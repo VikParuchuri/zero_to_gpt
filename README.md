@@ -57,68 +57,81 @@ Recurrent neural networks (RNNs) are optimized to process sequences of data.  Th
 - [Video](https://youtu.be/4wuIOcD1LLI) (optional)
 - [Implementation](notebooks/rnn/rnn.ipynb)
 
-**6. Transformers**
-
-Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
-
-- Lesson coming soon
-- [Implementation](notebooks/transformer/transformer.ipynb)
-
-**7. Backpropagation in depth**
+**6. Backpropagation in depth**
 
 So far, we've taken a loose look at backpropagation to let us focus on understanding neural network architecture.  We'll build a miniature version of PyTorch, and use it to understand backpropagation better.
 
 - [Lesson](explanations/comp_graph.ipynb)
 - [Video](https://youtu.be/RyKrG8rTGUY) (optional)
 
-**8. Optimizers**
+**7. Optimizers**
 
 We've used SGD to update model parameters so far.  We'll learn about other optimizers that have better convergence properties.
 
 - [Lesson](explanations/optimizers.ipynb)
 - Video coming soon
 
-**9. Regularization**
+**8. Regularization**
 
 Regularization prevents overfitting to the training set.  This means that the network can generalize well to new data.
 
 - Lesson coming soon
 - Video coming soon
 
-**10. PyTorch**
+**9. PyTorch**
 
 PyTorch is a framework for deep learning that automatically differentiates functions.  It's widely used to create cutting-edge models.
 
 - [Lesson](explanations/pytorch.ipynb)
 - Video coming soon
 
-**11. Data**
+**10. Working with Text**
+
+GPT models are trained on text.  We'll learn how to process text data for use in deep learning.
+
+- Lesson coming soon
+- Video coming soon
+
+**11. Transformers**
+
+Transformers fix the problem of vanishing/exploding gradients in RNNs by using attention.  Attention allows the network to process the whole sequence at once, instead of iteratively.
+
+- Lesson coming soon
+- [Implementation](notebooks/transformer/transformer.ipynb)
+
+**12. Cleaning Text Data**
 
 If you want to train a deep learning model, you need data.  Gigabytes of it.  We'll discuss how you can get this data and process it.
 
 - Lesson coming soon
 
-**12. GPT-2**
+**13. Distributed Training**
+
+To train large models, we need to use multiple GPUs.
+
+- Lesson coming soon
+
+**14. GPT-2**
 
 We'll train a version of the popular GPT-2 model.
 
 - Lesson coming soon
 
-**13. GPU kernels**
+**15. GPU kernels**
 
 PyTorch can automatically use GPUs for training, but not all operators are fused and optimized.  For example, [flash attention](https://github.com/HazyResearch/flash-attention) can speed up transformers by 2x or more.  We'll use [OpenAI Triton](https://github.com/openai/triton) to implement GPU kernels.
 
 - Lesson coming soon
 - Implementation coming soon
 
-**14. Efficient transformers**
+**16. Efficient Transformers**
 
 GPT models take a long time to train.  We can reduce that time by using more GPUs, but we don't all have access to GPU clusters.  To reduce training time, we'll incorporate some recent advances to make the transformer model more efficient.
 
 - Lesson coming soon
 - [Implementation](notebooks/eff_transformer/eff_transformer.ipynb)
 
-**15. Training GPT-X**
+**17. Training GPT-X**
 
 We'll train GPT-X, a version of a GPT model with some optimizations and improvements.
 
