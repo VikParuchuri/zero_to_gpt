@@ -3,6 +3,7 @@ from activation import Relu
 import numpy as np
 import math
 
+
 class Dense(Module):
     def __init__(self, input_size, output_size, bias=True, activation=True, seed=0):
         self.add_bias = bias
@@ -43,7 +44,11 @@ class Dense(Module):
         grad = grad @ self.weights.T
         return grad
 
-class DenseUpdate():
+
+class DenseManualUpdate(Module):
+    """
+    Dense layer, but we manually update the weights and bias externally.
+    """
     def __init__(self, input_size, output_size, dropout=None, activation=True, seed=0):
         self.add_activation = activation
         self.hidden = None
@@ -87,6 +92,8 @@ class DenseUpdate():
         # Update the weights given an update matrix
         self.weights += w_grad
         self.bias += b_grad
+
+
 def forward(x, layers, training=True):
     # Loop through each layer
     for layer in layers:
@@ -94,6 +101,7 @@ def forward(x, layers, training=True):
         layer.training = training
         x = layer.forward(x)
     return x
+
 
 def backward(grad, layers):
     # Save the gradients for each layer
