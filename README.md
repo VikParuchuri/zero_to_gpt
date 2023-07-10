@@ -75,7 +75,7 @@ We've used SGD to update model parameters so far.  We'll learn about other optim
 
 Regularization prevents overfitting to the training set.  This means that the network can generalize well to new data.
 
-- Lesson coming soon
+- [Lesson](explanations/regularization.ipynb)
 - Video coming soon
 
 **9. PyTorch**
