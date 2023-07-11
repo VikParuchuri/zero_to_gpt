@@ -89,7 +89,7 @@ PyTorch is a framework for deep learning that automatically differentiates funct
 
 GPT models are trained on text.  We'll learn how to process text data for use in deep learning.
 
-- Lesson coming soon
+- [Lesson](explanations/text.ipynb)
 - Video coming soon
 
 **11. Transformers**
