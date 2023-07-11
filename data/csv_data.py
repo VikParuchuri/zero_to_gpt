@@ -7,8 +7,8 @@ import os
 import gdown
 import pathlib
 
-
 DATA_DIR = pathlib.Path(__file__).parent.resolve()
+
 
 class CSVDataset(Dataset):
     def __init__(self, x, y):
@@ -72,7 +72,6 @@ class CSVDatasetWrapper:
         """
         self.final_data = self.split_data
 
-
     def generate_dataset(self, x, target, batch_size):
         dataset = self.dataset_cls(x, target)
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -94,6 +93,7 @@ class CSVDatasetWrapper:
             datasets.append((split["x"], split["target"]))
         return datasets
 
+
 class HousePricesDatasetWrapper(CSVDatasetWrapper):
     predictors = ["interest", "vacancy", "cpi", "price", "value", "adj_price", "adj_value"]
     target = "next_quarter"
@@ -108,6 +108,7 @@ class HousePricesDatasetWrapper(CSVDatasetWrapper):
         data[self.target] = (data[self.target] - data[self.target].min()) // 1000
         self.data = data
 
+
 class WeatherDatasetWrapper(CSVDatasetWrapper):
     predictors = ["tmax", "tmin", "rain"]
     target = "tmax_tomorrow"
@@ -121,6 +122,7 @@ class WeatherDatasetWrapper(CSVDatasetWrapper):
         data = self.data.ffill()
         data[self.predictors] = self.scaler.fit_transform(data[self.predictors])
         self.data = data
+
 
 class WeatherDatasetWrapperRNN(CSVDatasetWrapper):
     predictors = ["tmax", "tmin", "rain"]
@@ -160,6 +162,7 @@ class SkyServerDatasetWrapper(CSVDatasetWrapper):
         data[self.predictors] = self.scaler.fit_transform(data[self.predictors])
         data[self.target] = data[self.target].replace({"STAR": 0, "GALAXY": 1, "QSO": 2})
         self.data = data
+
 
 class SkyServerBinaryDatasetWrapper(SkyServerDatasetWrapper):
     def clean_data(self):
