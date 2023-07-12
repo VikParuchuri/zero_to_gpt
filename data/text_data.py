@@ -4,6 +4,7 @@ import datasets
 import os
 import re
 
+
 def chunk_tokens_and_ids(examples, chunk_size, ids_key, tokens_key):
     chunked_ids = []
     chunked_tokens = []
@@ -11,6 +12,7 @@ def chunk_tokens_and_ids(examples, chunk_size, ids_key, tokens_key):
         chunked_ids += [id[i:i + chunk_size] for i in range(0, len(id), chunk_size)]
         chunked_tokens += [token[i:i + chunk_size] for i in range(0, len(token), chunk_size)]
     return {tokens_key: chunked_tokens, ids_key: chunked_ids}
+
 
 def get_tokens_and_ids(examples, tokenizer, text_key, ids_key, tokens_key, padding=False):
     tokens = []
@@ -22,6 +24,7 @@ def get_tokens_and_ids(examples, tokenizer, text_key, ids_key, tokens_key, paddi
         ids.append(id)
     return {tokens_key: tokens, ids_key: ids}
 
+
 def calc_token_ratio(examples, ids_key, data_key):
     ratios = []
     for id, data in zip(examples[ids_key], examples[data_key]):
@@ -30,6 +33,7 @@ def calc_token_ratio(examples, ids_key, data_key):
         else:
             ratios.append(len(id) / len(data))
     return {"token_ratio": ratios}
+
 
 class DatasetWrapper:
     dataset_name = None
@@ -170,6 +174,7 @@ class WikiTextDataset(DatasetWrapper):
                 all_ids.append(ids)
                 all_tokens.append(tokens)
         return {self.ids_key: all_ids, self.tokens_key: all_tokens}
+
 
 class OpusBooksDataset(DatasetWrapper):
     dataset_name = "opus_books"
